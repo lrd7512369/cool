@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>吉行宝大数据分析</title>
+    <script src="js/echarts.min.js"></script>
+    <style>
+        @font-face {
+            /* font-properties */
+            font-family: number;
+            src: url('asset/YOURNAMED7HOMECONDENSED-DIANZI.TTF'),
+            url('asset/YOURNAMED7HOMECONDENSED-DIANZI.TTF'),
+            url('asset/YOURNAMED7HOMECONDENSED-DIANZI.TTF'); /* IE9 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        body {
+            width: 1896px;
+            height: 1068px;
+            padding: 0 12px 12px 12px;
+            font-size: 0;
+            background: url("image/bg.png") no-repeat;
+        }
+
+        #left, #middle, #right {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        #left, #right {
+            width: 421px;
+            padding-top: 24px;
+        }
+
+        #middle {
+            width: 1054px;
+        }
+
+        .banner {
+            width: 266px;
+            height: 48px;
+            line-height: 48px;
+            font-size: 16px;
+            color: #6DD5FF;
+        }
+
+        #banner_left {
+            padding-left: 50px;
+            background: url("image/banner_left.png") no-repeat;
+        }
+
+        #today {
+            border-left: solid 4px #FAFF00;
+            height: 16px;
+            width: 360px;
+            margin-top: 24px;
+            line-height: 16px;
+            vertical-align: middle;
+            padding-left: 16px;
+            color: #FFFFFF;
+            font-size: 16px;
+            margin-left: 12px;
+        }
+
+        #chart_overview {
+            margin-top: 32px;
+        }
+
+        .ov {
+            width: 386px;
+            height: 46px;
+            position: relative;
+            margin: 12px 0;
+        }
+
+        .ov_red {
+            background: url("image/ov_red.png") no-repeat;
+        }
+
+        .ov_blue {
+            background: url("image/ov_blue.png") no-repeat;
+        }
+
+        .ov_red .ov_desc {
+            color: #ff6c57;
+        }
+
+        .ov_blue .ov_desc {
+            color: #6DD5FF;
+        }
+
+        .count_container {
+            font-family: number, serif;
+        }
+
+        .ov_red .count_container span {
+            background: #ff6c57;
+        }
+
+        .ov_blue .count_container span {
+            background: #6DD5FF;
+        }
+
+        .ov_desc {
+            position: absolute;
+            font-size: 14px;
+            line-height: 46px;
+            left: 12px;
+        }
+
+        .count_container {
+            position: absolute;
+            left: 172px;
+            width: 200px;
+            height: 100%;
+            color: #FFFFFF;
+            vertical-align: middle;
+            font-size: 24px;
+        }
+
+        .ov_count {
+            text-align: center;
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            font-weight: bold;
+            width: 20px;
+            vertical-align: middle;
+            margin: 8px 2px;
+        }
+
+        #chart_everyday {
+            background: url("image/everyday.png") no-repeat;
+            width: 421px;
+            height: 277px;
+            margin-top: 36px;
+        }
+
+        #chart_passTime {
+            background: url("image/everyday.png") no-repeat;
+            width: 421px;
+            height: 277px;
+            margin-top: 36px;
+            font-size: 0;
+        }
+
+        .chart_title {
+            width: 100%;
+            height: 40px;
+            font-size: 16px;
+            color: #FFFFFF;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+        }
+
+        #chart_passTime_jxb, #chart_passTime_scan {
+            width: 50%;
+            height: 231px;
+            display: inline-block;
+        }
+
+        #map {
+            background: url("image/map.png") no-repeat;
+            width: 1054px;
+            height: 705px;
+        }
+
+        #chart_station {
+            width: 1054px;
+            height: 345px;
+        }
+
+        #banner_right {
+            margin-left: 105px;
+            padding-left: 125px;
+            width: 191px;
+            background: url("image/banner_right.png") no-repeat;
+        }
+
+        #chart_jxbMonthReg {
+            margin-top: 20px;
+            background: url("image/jxb_month_reg.png") no-repeat;
+            width: 421px;
+            height: 305px;
+        }
+
+        #chart_everyMonth {
+            margin-top: 20px;
+            background: url("image/jxb_month_reg.png") no-repeat;
+            width: 421px;
+            height: 305px;
+        }
+
+        #chart_tradeType_box {
+            margin-top: 20px;
+            background: url("image/jxb_month_reg.png") no-repeat;
+            width: 421px;
+            height: 305px;
+        }
+
+        #chart_tradeType {
+            width: 421px;
+            height: 265px;
+        }
+    </style>
+</head>
+<body>
+<div id="left">
+    <div class="banner" id="banner_left">吉行宝数据运营中心</div>
+    <div id="today"></div>
+    <div id="chart_overview">
+        <div class="ov ov_red">
+            <span class="ov_desc">今日车流量（辆）</span>
+            <div class="count_container" id="count_today_passed">
+            </div>
+        </div>
+        <div class="ov ov_blue">
+            <span class="ov_desc">今日付费金额（元）</span>
+            <div class="count_container" id="count_today_payed">
+            </div>
+        </div>
+        <div class="ov ov_red">
+            <span class="ov_desc">累计车流量（万辆）</span>
+            <div class="count_container" id="count_total_passed">
+            </div>
+        </div>
+        <div class="ov ov_blue">
+            <span class="ov_desc">累计付费金额（万元）</span>
+            <div class="count_container" id="count_total_payed">
+            </div>
+        </div>
+        <div class="ov ov_red">
+            <span class="ov_desc">累计注册用户数</span>
+            <div class="count_container" id="count_total_signed">
+            </div>
+        </div>
+    </div>
+    <div id="chart_everyday"></div>
+    <div id="chart_passTime">
+        <div class="chart_title">
+            扫码与无感通行平均用时对比
+        </div>
+        <div id="chart_passTime_scan"></div>
+        <div id="chart_passTime_jxb"></div>
+    </div>
+</div>
+<div id="middle">
+    <div id="map"></div>
+    <div id="chart_station"></div>
+</div>
+<div id="right">
+    <div class="banner" id="banner_right">吉行宝数据运营中心</div>
+    <div id="chart_jxbMonthReg"></div>
+    <div id="chart_everyMonth"></div>
+    <div id="chart_tradeType_box">
+        <div class="chart_title">
+            本月付费方式统计
+        </div>
+        <div id="chart_tradeType"></div>
+    </div>
+</div>
+</body>
+
+<script>
+
+    const PERIOD_TEN_SECONDS = 10000;
+
+    const PERIOD_HALF_HOUR = 1800000;
+
+    window.onload = function () {
+        initSize();
+        setInterval(initDate, 500);
+        requestOverviewData();
+        requestEverydayData();
+        requestPassTimeData();
+        requestStationData();
+        requestJxbRegData();
+        requestEveryMonthData();
+        requestTradeTypeData();
+    };
+
+    window.onresize = function () {
+        initSize();
+    };
+
+    /**
+     * 初始化相关尺寸
+     */
+    function initSize() {
+
+    }
+
+    function requestOverviewData() {
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    if (http.status === 200) {
+                        var data = JSON.parse(http.response);
+                        updateCount("count_today_passed", data.carNumber);
+                        updateCount("count_today_payed", data.money);
+                        updateCount("count_total_passed", data.allNumber);
+                        updateCount("count_total_payed", data.allMoney);
+                        updateCount("count_total_signed", data.allUser);
+                    }
+                    setTimeout(requestOverviewData, PERIOD_TEN_SECONDS);
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "http://122.112.213.51:8080/jxbreport/querydata/free/getAllNumber.htm", true);
+        http.send();
+    }
+
+    function requestEverydayData() {
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    if (http.status === 200) {
+                        var data = JSON.parse(http.response);
+                        loadEverydayData(data);
+                    }
+                    setTimeout(requestEverydayData, PERIOD_HALF_HOUR);
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "http://122.112.213.51:8080/jxbreport/querydata/free/getdaysNumberAndMoney.htm", true);
+        http.send();
+    }
+
+    function requestPassTimeData() {
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    if (http.status === 200) {
+                        var data = JSON.parse(http.response);
+                        loadPassTimeJxbData(parseInt(parseFloat(data.runTime)));
+                        loadPassTimeScanData(parseInt(parseFloat(data.scanTime)));
+                    }
+                    setTimeout(requestPassTimeData, PERIOD_HALF_HOUR);
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "http://122.112.213.51:8080/jxbreport/querydata/free/getPaytime.htm", true);
+        http.send();
+    }
+
+    function requestStationData() {
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    if (http.status === 200) {
+                        var data = JSON.parse(http.response);
+                        loadStationData(data);
+                    }
+                    setTimeout(requestStationData, PERIOD_TEN_SECONDS);
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "http://122.112.213.51:8080/jxbreport/querydata/free/getStationNumber.htm", true);
+        http.send();
+    }
+
+    function requestJxbRegData() {
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    if (http.status === 200) {
+                        var data = JSON.parse(http.response);
+                        loadJxbMonthRegData(data);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "http://122.112.213.51:8080/jxbreport/querydata/free/getRegisterNumber.htm", true);
+        http.send();
+    }
+
+    function requestEveryMonthData() {
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    if (http.status === 200) {
+                        var data = JSON.parse(http.response);
+                        loadEveryMonthData(data);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "http://122.112.213.51:8080/jxbreport/querydata/free/getMonthNumberAndMoney.htm", true);
+        http.send();
+    }
+
+    function requestTradeTypeData() {
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    if (http.status === 200) {
+                        var data = JSON.parse(http.response);
+                        loadTradeTypeData(data);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "http://122.112.213.51:8080/jxbreport/querydata/free/getPayTypeReport.htm", true);
+        http.send();
+    }
+
+    /**
+     * 每日车流量和付费金额
+     */
+    function loadEverydayData(data) {
+        var time = [];
+        var carNumber = [];
+        var money = [];
+        for (var i = 0; i < data.length; i++) {
+            time.push(data[i].time);
+            carNumber.push(data[i].carNumber);
+            money.push(data[i].money);
+        }
+        var chart_everyday = echarts.init(document.getElementById("chart_everyday"));
+        var option = {
+            title: {
+                text: '日车流量与付费金额',
+                left: 'center',
+                top: 6,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 16
+                }
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['日车流量（辆）', '付费金额（元）'],
+                left: 'center',
+                top: 50,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 12
+                }
+            },
+            grid: {
+                top: 120,
+                bottom: 40,
+                left: 20,
+                right: 20
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: ['20%', '20%'],
+                axisLabel: {
+                    color: "#FFFFFF",
+                    fontSize: 12
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: '#4E4D5A'
+                    },
+                    show: true
+                },
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: time
+            },
+            yAxis: {
+                show: false,
+                type: 'value',
+                axisLabel: {
+                    color: "#FFFFFF",
+                    fontSize: 12
+                },
+                axisTick: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                }
+            },
+            series: [
+                {
+                    name: '日车流量（辆）',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        color: '#00F7FB'
+                    },
+                    itemStyle: {
+                        color: '#00F7FB'
+                    },
+                    label: {
+                        show: true,
+                        color: '#FFFFFF',
+                        width: 42,
+                        height: 42,
+                        align: 'center',
+                        fontSize: 12,
+                        lineHeight: 25,
+                        backgroundColor: {
+                            image: 'image/bubble_blue.png'
+                        },
+                        rich: {}
+                    },
+                    data: carNumber
+                },
+                {
+                    name: '付费金额（元）',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        color: '#F1FF00'
+                    },
+                    itemStyle: {
+                        color: '#F1FF00'
+                    },
+                    label: {
+                        show: true,
+                        color: '#FFFFFF',
+                        width: 42,
+                        height: 42,
+                        align: 'center',
+                        fontSize: 12,
+                        lineHeight: 25,
+                        backgroundColor: {
+                            image: 'image/bubble_yellow.png'
+                        },
+                        rich: {}
+                    },
+                    data: money
+                }
+            ]
+        };
+        chart_everyday.setOption(option);
+    }
+
+    /**
+     * 扫码通行通行时间
+     */
+    function loadPassTimeScanData(time) {
+        var chart_passTime = echarts.init(document.getElementById("chart_passTime_scan"));
+        var option = {
+            series: [
+                {
+                    name: '扫码通行',
+                    type: 'gauge',
+                    min: 0,
+                    max: 100,
+                    splitNumber: 10,
+                    radius: '80%',
+                    axisLine: {            // 坐标轴线
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: [[1, '#00F7FB']],
+                            width: 5
+                        }
+                    },
+                    axisLabel: {            // 坐标轴小标记
+                        textStyle: {       // 属性lineStyle控制线条样式
+                            color: '#fff',
+                            fontSize: 10
+                        }
+                    },
+                    axisTick: {            // 坐标轴小标记
+                        length: 15,        // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: '#006E99'
+                        }
+                    },
+                    splitLine: {           // 分隔线
+                        length: 20,         // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                            width: 6,
+                            color: '#fff'
+                        }
+                    },
+                    pointer: {           // 分隔线
+                        shadowColor: '#EAFF00', //默认透明
+                        length: '50%',
+                        width: 3
+                    },
+                    title: {
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bold',
+                            fontSize: 16,
+                            color: '#fff'
+                        },
+                        offsetCenter: [0, '70%']
+                    },
+                    detail: {
+                        offsetCenter: [0, '30%'],       // x, y，单位px
+                        color: '#00F7FB',
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        width: 32,
+                        height: 18,
+                        formatter: function (value) {
+                            return value + "S";
+                        },
+                        rich: {}
+                    },
+                    data: [{value: time, name: '扫码通行'}]
+                }
+            ]
+        };
+        chart_passTime.setOption(option);
+    }
+
+    /**
+     * 无感通行时间
+     */
+    function loadPassTimeJxbData(time) {
+        var chart_passTime = echarts.init(document.getElementById("chart_passTime_jxb"));
+        var option = {
+            series: [
+                {
+                    name: '无感通行',
+                    type: 'gauge',
+                    min: 0,
+                    max: 10,
+                    splitNumber: 10,
+                    radius: '80%',
+                    axisLine: {            // 坐标轴线
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: [[1, '#F1FF00']],
+                            width: 5
+                        }
+                    },
+                    axisLabel: {            // 坐标轴小标记
+                        textStyle: {       // 属性lineStyle控制线条样式
+                            color: '#fff',
+                            fontSize: 10
+                        }
+                    },
+                    axisTick: {            // 坐标轴小标记
+                        length: 15,        // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: '#006E99'
+                        }
+                    },
+                    splitLine: {           // 分隔线
+                        length: 20,         // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                            width: 6,
+                            color: '#fff'
+                        }
+                    },
+                    pointer: {           // 分隔线
+                        shadowColor: '#EAFF00', //默认透明
+                        length: '50%',
+                        width: 3
+                    },
+                    title: {
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bold',
+                            fontSize: 16,
+                            color: '#fff'
+                        },
+                        offsetCenter: [0, '70%']
+                    },
+                    detail: {
+                        offsetCenter: [0, '30%'],       // x, y，单位px
+                        color: '#F1FF00',
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        width: 36,
+                        height: 18,
+                        formatter: function (value) {
+                            return value + "S";
+                        },
+                        rich: {}
+                    },
+                    data: [{value: time, name: '无感通行'}]
+                }
+            ]
+        };
+        chart_passTime.setOption(option);
+    }
+
+    /**
+     * 站点收费数据
+     */
+    function loadStationData(data) {
+        var station = [];
+        var carNumber = [];
+        var money = [];
+        for (var i = 0; i < data.length; i++) {
+            carNumber.push(data[i].stationcarNumber);
+            money.push(data[i].stationMoney);
+            station.push(data[i].stationName);
+        }
+        var chart_station = echarts.init(document.getElementById("chart_station"));
+        var option = {
+            color: ['#31E8F3', '#FFFF1E'],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                top: 70,
+                right: 20,
+                left: 80,
+                bottom: 20
+            },
+            legend: {
+                textStyle: {
+                    color: '#FFFFFF'
+                },
+                data: ['付费用户金额（元）', '车流量（辆）'],
+                top: 20,
+                left: 100
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#FFFFFF',
+                        interval: 0,
+                        fontSize: 12
+                    },
+                    show: true,
+                    type: 'category',
+                    axisTick: {show: false},
+                    data: station
+                }
+            ],
+            yAxis: [
+                {
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#00F7FA'
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    show: true,
+                    axisTick: {show: false},
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '付费用户金额（元）',
+                    type: 'bar',
+                    label: {
+                        show: true,
+                        position: "top",
+                        distance: 15,
+                        align: 'center',
+                        rotate: 0,
+                        formatter: '{c}',
+                        fontSize: 14,
+                        rich: {
+                            name: {
+                                textBorderColor: '#fff'
+                            }
+                        }
+                    },
+                    data: money
+                },
+                {
+                    name: '车流量（辆）',
+                    type: 'bar',
+                    label: {
+                        show: true,
+                        position: "top",
+                        distance: 15,
+                        align: 'center',
+                        rotate: 0,
+                        formatter: '{c}',
+                        fontSize: 14,
+                        rich: {
+                            name: {
+                                textBorderColor: '#fff'
+                            }
+                        }
+                    },
+                    data: carNumber
+                }
+            ]
+        };
+        chart_station.setOption(option);
+    }
+
+    /**
+     * 吉行宝月注册用户数
+     */
+    function loadJxbMonthRegData(data) {
+        var time = [];
+        var userAccount = [];
+        for (var i = 0; i < data.length; i++) {
+            time.push(data[i].time);
+            userAccount.push(data[i].userNumber);
+        }
+        var chart_jxbMonthReg = echarts.init(document.getElementById("chart_jxbMonthReg"));
+        var option = {
+            title: {
+                text: '吉行宝月注册用户数',
+                left: 'center',
+                top: 6,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 16
+                }
+            },
+            grid: {
+                top: 90,
+                left: 80,
+                right: 30,
+                bottom: 50
+            },
+            legend: {
+                textStyle: {
+                    color: '#FFFFFF'
+                },
+                data: ['用户数（人）'],
+                top: 50
+            },
+            xAxis: {
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    margin: 20,
+                    interval: 0
+                },
+                type: 'category',
+                boundaryGap: false,
+                data: time
+            },
+            yAxis: {
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    margin: 20
+                },
+                splitLine: {
+                    show: false
+                },
+                type: 'value'
+            },
+            series: [{
+                name: '用户数（人）',
+                data: userAccount,
+                type: 'line',
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 0,
+                        y2: 1,
+                        colorStops: [{
+                            offset: 0, color: '#F9FF00' // 0% 处的颜色
+                        }, {
+                            offset: 1, color: '#1B1570' // 100% 处的颜色
+                        }],
+                        globalCoord: false // 缺省为 false
+                    }
+                },
+                label: {
+                    show: true,
+                    position: "bottom",
+                    distance: 6,
+                    align: 'center',
+                    color: '#FFFFFF',
+                    rotate: 60,
+                    formatter: '{c}',
+                    fontSize: 10,
+                    backgroundColor: '#FF852C',
+                    padding: 3,
+                    rich: {}
+                }
+                , itemStyle: {
+                    color: '#F9FF00'
+                }
+            }]
+        };
+        chart_jxbMonthReg.setOption(option);
+    }
+
+    /**
+     * 每日车流量和付费金额
+     */
+    function loadEveryMonthData(data) {
+        var time = [];
+        var carNumber = [];
+        var money = [];
+        for (var i = 0; i < data.length; i++) {
+            time.push(data[i].time);
+            carNumber.push(data[i].carNumber);
+            if (i === 7) {
+                money.push(data[i].money / 10);
+            } else {
+                money.push(data[i].money);
+            }
+        }
+        var chart_everyMonth = echarts.init(document.getElementById("chart_everyMonth"));
+        var option = {
+            title: {
+                text: '月车流量与付费金额',
+                left: 'center',
+                top: 6,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 16
+                }
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['付费金额（万元）', '月车流量（万辆）'],
+                left: 'center',
+                top: 50,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 12
+                }
+            },
+            grid: {
+                top: 120,
+                bottom: 40,
+                left: 50,
+                right: 25
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: ['20%', '20%'],
+                axisLabel: {
+                    color: "#FFFFFF",
+                    fontSize: 12,
+                    interval: 0
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                },
+                axisTick: {
+                    show: true,
+                    inside: true,
+                    alignWithLabel: true
+                },
+                data: time
+            },
+            yAxis: [
+                {
+                    name: '付费金额',
+                    type: 'value',
+                    axisLabel: {
+                        formatter: function (value) {
+                            if (value === 0) {
+                                return '0';
+                            }
+                            return value / 10000;
+                        },
+                        color: "#FFFFFF",
+                        fontSize: 12
+                    },
+                    axisTick: {
+                        show: true
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#F1FF00'
+                        }
+                    }
+                },
+                {
+                    name: '月车流量',
+                    type: 'value',
+                    axisLabel: {
+                        formatter: function (value) {
+                            if (value === 0) {
+                                return '0';
+                            }
+                            return value / 10000;
+                        },
+                        color: "#00F7FB",
+                        fontSize: 12
+                    },
+                    axisTick: {
+                        show: true
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#00DEC8'
+                        }
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '月车流量（万辆）',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        color: '#00F7FB'
+                    },
+                    itemStyle: {
+                        color: '#00F7FB'
+                    },
+                    label: {
+                        show: true,
+                        formatter: function (params) {
+                            return parseInt(params.value / 10000);
+                        },
+                        color: '#FFFFFF'
+                    },
+                    yAxisIndex: 1,
+                    data: carNumber
+                },
+                {
+                    name: '付费金额（万元）',
+                    smooth: true,
+                    type: 'line',
+                    lineStyle: {
+                        color: '#F1FF00'
+                    },
+                    itemStyle: {
+                        color: '#F1FF00'
+                    },
+                    label: {
+                        show: true,
+                        formatter: function (params) {
+                            return parseInt(params.value / 10000);
+                        },
+                        color: '#FFFFFF'
+                    },
+                    data: money
+                }
+            ]
+        };
+        chart_everyMonth.setOption(option);
+    }
+
+    /**
+     * 支付方式比较
+     */
+    function loadTradeTypeData(data) {
+        var chart_tradeType = echarts.init(document.getElementById("chart_tradeType"));
+        var option = {
+            legend: {
+                bottom: 2,
+                data: ['微信扫码', '支付宝扫码', '吉行宝', '支付宝', '微信', '信用卡'],
+                itemWidth: 15,
+                itemHeight: 15,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 10
+                }
+            },
+            series: [
+                {
+                    name: '付费方式',
+                    type: 'pie',
+                    center: [210, 120],
+                    selectedMode: 'multiple',
+                    radius: [0, '50%'],
+                    label: {
+                        position: 'inner',
+                        formatter: function (params) {
+                            return params.name + "\n" + params.value + "，" + parseInt(params.percent) + "%";
+                        },
+                        fontSize: 10,
+                        color: '#FFFFFF',
+                        align: 'left'
+                    },
+                    data: [
+                        {
+                            value: data.userAccount
+                            , name: '吉行宝'
+                            , selected: true
+                            , itemStyle: {
+                            color: '#9F00DC'
+                        }
+                        },
+                        {
+                            value: data.weixin
+                            , name: '微信扫码'
+                            , selected: true,
+                            itemStyle: {
+                                color: '#00a208'
+                            }
+                        },
+                        {
+                            value: data.zfbpay
+                            , name: '支付宝扫码'
+                            , selected: true
+                            , itemStyle: {
+                            color: '#0000FF'
+                        }
+                        }
+                    ]
+                },
+                {
+                    name: '付费方式',
+                    center: [210, 120],
+                    type: 'pie',
+                    labelLine: {
+                        show: false
+                    },
+                    label: {
+                        formatter: function (params) {
+                            return params.name + "\n" + params.value + "，" + parseInt(params.percent) + "%";
+                        }
+                    },
+                    radius: ['65%', '75%'],
+                    data: [
+                        {
+                            value: data.zfbdk
+                            , name: '支付宝'
+                            , itemStyle: {
+                            color: '#F0FF00'
+                        }
+                        },
+                        {
+                            value: data.weixindk
+                            , name: '微信'
+                            , itemStyle: {
+                            color: '#00FFFF'
+                        }
+                        },
+                        {
+                            value: data.xinyongka
+                            , name: '信用卡'
+                            , itemStyle: {
+                            color: '#FF7C0D'
+                        }
+                        }
+                    ]
+                }
+            ]
+        };
+        chart_tradeType.setOption(option);
+    }
+
+    /**
+     * 初始化日期
+     */
+    function initDate() {
+        var today = document.getElementById("today");
+        var date = new Date();
+        today.innerHTML = "今日统计&nbsp;&nbsp;&nbsp;"
+            + date.getFullYear() + "年"
+            + validTime(date.getMonth() + 1) + "月"
+            + validTime(date.getUTCDate()) + "日&nbsp;"
+            + validTime(date.getHours()) + "时"
+            + validTime(date.getMinutes()) + "分"
+            + validTime(date.getSeconds()) + "秒";
+        if (date.getHours() === 0 && date.getMinutes() === 0 && date.getSeconds() === 0) {
+            requestEveryMonthData();
+            requestJxbRegData();
+            requestTradeTypeData();
+        }
+    }
+
+    function validTime(number) {
+        if (number >= 10) {
+            return "" + number;
+        } else {
+            return '0' + number;
+        }
+    }
+
+    /**
+     * 更新总揽数据
+     * @param domId 对应的数据id
+     * @param count 数量
+     */
+    function updateCount(domId, count) {
+        var html = "";
+        var dom = document.getElementById(domId);
+        if ("count_total_passed" === domId || "count_total_payed" === domId) {
+            count = count / 10000;
+        }
+        var countStr = count.toString();
+        countStr = fillZero(countStr);
+        for (var i = 0; i < 8; i++) {
+            html += "<span class='ov_count'>" + countStr.charAt(i) + "</span>"
+        }
+        dom.innerHTML = html;
+    }
+
+    /**
+     * 字符串补'0'
+     * @param countStr 要补充的数字字符串
+     * @returns {string|*}
+     */
+    function fillZero(countStr) {
+        if (countStr.length >= 8) {
+            return countStr;
+        }
+        //有小数点后面补
+        if (countStr.indexOf(".") !== -1) {
+            countStr = countStr + "0";
+        } else {
+            countStr = "0" + countStr;
+        }
+        return fillZero(countStr);
+    }
+</script>
+</html>

@@ -1,0 +1,103 @@
+.sub_header_box{
+    position: relative;
+    height: 48px;
+    line-height: 48px;
+}
+
+.sub_header {
+    height: 48px;
+    line-height: 48px;
+    font-size: 14px;
+    color: #757575;
+    margin-left: 72px;
+}
+
+.list_item {
+    height: 72px;
+    position: relative;
+}
+
+.list_item_single_text{
+    height: 48px;
+    position: relative;
+}
+
+.list_icon_single_text {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    left: 12px;
+    top: 12px;
+}
+
+.list_title_single_text {
+    color: #706B6B;
+    font-size: 16px;
+    position: absolute;
+    line-height: 48px;
+    left: 56px;
+    vertical-align: middle;
+}
+
+/*.list_item:hover{*/
+    /*cursor: pointer;*/
+    /*background: #D5D5D5;*/
+/*}*/
+
+.list_icon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    left: 16px;
+    top: 16px;
+}
+
+.list_title {
+    color: #212121;
+    font-size: 18px;
+    position: absolute;
+    left: 72px;
+    bottom: 32px;
+    vertical-align: bottom;
+}
+
+.list_subtitle {
+    color: #757575;
+    font-size: 16px;
+    left: 72px;
+    font-style: italic;
+    bottom: 12px;
+    vertical-align: bottom;
+    position: absolute;
+}
+
+.list_operation {
+    width: 24px;
+    height: 24px;
+    padding: 12px;
+    border-radius: 50%;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+}
+
+.sub_header_operation{
+    top: 0;
+}
+
+.list_operation:hover{
+    background: #ECECEC;
+    cursor: pointer;
+}
+
+.list_divider{
+    height: 1px;
+    background: #EBEBEB;
+    margin-left: 72px;
+}
+
+.list_divider_single_text{
+    height: 1px;
+    background: #EBEBEB;
+}

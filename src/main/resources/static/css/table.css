@@ -1,0 +1,206 @@
+/*
+table操作区
+ */
+.table_operation {
+    height: 64px;
+    position: relative;
+    padding-left: 64px;
+    margin-left: 1px;
+    box-shadow: 0 2px 4px #EDEDED;
+}
+
+/*
+操作区中的文字内容
+ */
+.table_operation span {
+    height: 36px;
+    position: absolute;
+    padding: 0 8px;
+    font-size: 18px;
+    top: 14px;
+    line-height: 36px;
+    color: #212121;
+}
+
+/*
+操作区中的图片按钮
+ */
+.table_operation img {
+    display: block;
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    padding: 12px;
+    border-radius: 50%;
+    top: 8px;
+}
+
+/*
+按钮按下的效果
+ */
+.table_operation img:hover {
+    cursor: pointer;
+    background: #ECECEC;
+    border-radius: 50%;
+}
+
+.table_container{
+    width: 100%;
+    overflow: scroll;
+}
+
+.table_container table {
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table_container table td {
+    border-bottom: 1px solid #E0E0E0;
+    vertical-align: middle;
+}
+
+/*
+table字段文字样式
+ */
+.table_field {
+    color: #8D8D8D;
+    font-size: 14px;
+    line-height: 48px;
+    height: 48px;
+}
+
+/*
+table内容文字样式
+ */
+.table_content {
+    color: #222222;
+    font-size: 16px;
+    line-height: 48px;
+    height: 48px;
+}
+
+/*
+包含排序功能图标的字段
+ */
+.sort_field {
+    text-align: left;
+}
+
+.sort_field img {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.sort_field img:hover {
+    background: #ECECEC;
+    cursor: pointer;
+}
+
+/*
+table中的id，一般包含一个checkbox
+ */
+.id {
+    padding-left: 72px;
+    width: 96px;
+    text-align: left;
+}
+
+/*
+id内容
+ */
+.id span {
+    line-height: 48px;
+    padding-left: 12px;
+    vertical-align: middle;
+}
+
+/*
+绑定id的checkbox，这里使用div代替
+ */
+.checkbox {
+    outline: none;
+    display: inline-block;
+    border: 2px solid #757575;
+    border-radius: 3px;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    background: #FFFFFF;
+    text-align: center;
+}
+
+/*
+分页区域
+ */
+.table_pageable {
+    width: 100%;
+    height: 64px;
+    position: relative;
+    background: #FFFFFF;
+    box-shadow: 0 -2px 4px #EDEDED;
+}
+
+.table_pageable img {
+    width: 24px;
+    position: absolute;
+    display: block;
+    height: 24px;
+    top: 20px;
+}
+
+.table_pageable img:hover{
+    cursor: pointer;
+    background: #ECECEC;
+}
+
+.table_pageable span {
+    display: block;
+    position: absolute;
+    line-height: 24px;
+    height: 24px;
+    top: 20px;
+    color: #A1A1A1;
+    font-size: 14px;
+}
+
+/*
+每页页数
+ */
+#page_size{
+    text-align: right;
+    right: 280px;
+}
+
+/*
+选择每页页数
+ */
+#select_page_size{
+    right: 256px;
+}
+
+/*
+下一页
+ */
+#next_page {
+    right: 64px;
+    transform: rotate(180deg);
+}
+
+/*
+上一页
+ */
+#last_page {
+    right: 112px;
+}
+
+/*
+当前页码
+ */
+#index {
+    right: 188px;
+}
+
+#page_size_desc {
+    right: 320px;
+}

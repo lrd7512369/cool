@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>投放</title>
+    <link type="text/css" rel="stylesheet" href="css/base.css">
+    <link type="text/css" rel="stylesheet" href="css/step.css">
+    <link type="text/css" rel="stylesheet" href="css/card.css">
+    <link type="text/css" rel="stylesheet" href="css/list.css">
+    <script src="https://webapi.amap.com/maps?v=1.4.8&key=9ce9515000767c20d6769865396d5e75"></script>
+    <style>
+        .step_content {
+            margin: 48px;
+            background: #FAFAFA;
+            text-align: center;
+        }
+
+        #step_product, #step_address {
+            display: none;
+        }
+
+        #step_address {
+            position: relative;
+        }
+
+        .search_box {
+            box-shadow: 0 2px 4px #AFAFAF;
+            background: #FFFFFF;
+            position: absolute;
+            border-radius: 4px;
+            left: 24px;
+            top: 24px;
+        }
+
+        #search_input_box {
+            height: 56px;
+            line-height: 56px;
+            width: 360px;
+        }
+
+        #search_icon {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 24px;
+            top: 16px;
+        }
+
+        #search_address {
+            width: 248px;
+            height: 56px;
+            position: absolute;
+            left: 56px;
+            font-size: 18px;
+            line-height: 56px;
+            vertical-align: middle;
+            color: #212121;
+        }
+
+        #search_address ::-webkit-input-placeholder {
+            color: #BDBDBD;
+            vertical-align: middle;
+        }
+
+        #search_clear {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            right: 12px;
+            padding: 12px;
+            border-radius: 50%;
+            top: 4px;
+            visibility: hidden;
+        }
+
+        #search_clear:hover {
+            background: #ECECEC;
+            cursor: pointer;
+        }
+
+        #search_content_box {
+            border-top: 1px #FAFAFA solid;
+            max-height: 360px;
+            overflow: scroll;
+        }
+
+        .list_item_address {
+            height: 64px;
+            position: relative;
+        }
+
+        .list_icon_address {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 24px;
+            top: 20px;
+        }
+
+        .list_title_address {
+            color: #212121;
+            font-size: 16px;
+            position: absolute;
+            left: 72px;
+            bottom: 32px;
+            vertical-align: bottom;
+        }
+
+        .list_subtitle_address {
+            color: #757575;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 264px;
+            text-overflow: ellipsis;
+            font-size: 14px;
+            left: 72px;
+            font-style: italic;
+            bottom: 12px;
+            vertical-align: bottom;
+            position: absolute;
+        }
+
+        .list_item_single_text:hover, .list_item_address:hover {
+            cursor: pointer;
+            background: #FAFAFA;
+        }
+
+        .rb_box {
+            width: 320px;
+            text-align: center;
+            display: inline-block;
+            margin: 56px 24px 0;
+        }
+
+        .rb {
+            margin: 24px 0 0;
+        }
+
+        .rb_box {
+            cursor: pointer;
+        }
+
+        #step_product {
+            text-align: left;
+            position: relative;
+        }
+
+        #product_selected_box {
+            overflow: scroll;
+            text-align: left;
+            position: absolute;
+            border-right: 1px solid #EDEDED;
+            left: 0;
+        }
+
+        #product_all_box {
+            overflow: scroll;
+            text-align: left;
+            position: absolute;
+            right: 0;
+        }
+
+        .product_type {
+            color: #000000;
+            font-size: 32px;
+            display: block;
+            text-align: left;
+            padding-left: 72px;
+            line-height: 96px;
+            height: 96px;
+        }
+
+        .item_add {
+            right: 16px;
+        }
+
+        .item_reduce {
+            right: 56px;
+        }
+
+        .item_delete {
+            right: 96px;
+        }
+
+    </style>
+</head>
+<body>
+<header class="step_desc">
+    <ol>
+        <li class="step">
+            <div class="indicator">1</div>
+            <span class="indicator_desc">选择设备</span>
+        </li>
+        <li>
+            <div class="indicator_divider"></div>
+        </li>
+        <li class="step">
+            <div class="indicator">2</div>
+            <span class="indicator_desc">挑选商品</span>
+        </li>
+        <li>
+            <div class="indicator_divider"></div>
+        </li>
+        <li class="step">
+            <div class="indicator">3</div>
+            <span class="indicator_desc">选择投放地点</span>
+        </li>
+    </ol>
+</header>
+<div class="divider"></div>
+<main class="step_content">
+    <div id="step_device">
+        <div class="rb_box" id="rb_box_fridge" onclick="onDeviceSelect(this.id)">
+            <div class="card" id="card_fridge">
+                <header class="card_header">
+                    <img src="drawable/device.svg" class="card_icon">
+                    <span class="card_title">冰箱</span>
+                    <span class="card_subtitle">5层</span>
+                </header>
+                <main>
+                    <img src="drawable/fridge.jpg" class="card_image">
+                </main>
+                <footer class="card_content">
+                   <span>
+                       只有冷藏室，可售卖饮料和水果。
+                   </span>
+                </footer>
+            </div>
+            <img src="drawable/rb_checked.svg" class="rb image_button" id="rb_fridge">
+        </div>
+        <div class="rb_box" id="rb_box_rack" onclick="onDeviceSelect(this.id)">
+            <div class="card" id="card_rack">
+                <header class="card_header">
+                    <img src="drawable/device.svg" class="card_icon">
+                    <span class="card_title">货架</span>
+                    <span class="card_subtitle">7层</span>
+                </header>
+                <main>
+                    <img src="drawable/rack.jpg" class="card_image">
+                </main>
+                <footer class="card_content">
+                   <span>
+                       可售卖零食和饮料。
+                   </span>
+                </footer>
+            </div>
+            <img src="drawable/rb_unchecked.svg" class="rb image_button" id="rb_rack">
+        </div>
+    </div>
+    <div id="step_product">
+        <div id="product_selected_box">
+            <span class="product_type">已选择的商品</span>
+            <div id="list_selected_products"></div>
+        </div>
+        <div id="product_all_box">
+            <span class="product_type">所有商品</span>
+            <div id="list_all_products"></div>
+        </div>
+    </div>
+    <div id="step_address">
+        <div id="map">
+        </div>
+        <div class="search_box">
+            <div id="search_input_box">
+                <img src="drawable/search.svg" id="search_icon">
+                <label>
+                    <input id="search_address" oninput="onSearchTextChanged(this)" placeholder="请输入投放地点..."
+                           onkeypress="onEnterKeyPressed(event)">
+                </label>
+                <img src="drawable/clear.svg" id="search_clear" onclick="clearSearchText(this)">
+            </div>
+            <div id="search_content_box">
+            </div>
+        </div>
+    </div>
+</main>
+<div class="divider"></div>
+<footer class="step_operation">
+    <div class="button base_button" id="next_step" onclick="onNextStep()">继续</div>
+    <div class="button base_button" id="last_step" onclick="onLastStep()">返回上一步</div>
+    <div class="button base_button" id="cancel" onclick="onCancel()">取消</div>
+</footer>
+<script src="js/map.js"></script>
+<script>
+
+    const CODE_SUCCESS = 0;
+
+    //总共3步
+    const STEP_COUNT = 3;
+
+    //当前步骤
+    let stepIndex = 0;
+
+    const DEVICE_FRIDGE = 0;
+    const DEVICE_RACK = 1;
+    const LAYERS_FRIDGE = 6;
+    const LAYERS_RACK = 6;
+
+    //设备类型,默认是冰箱
+    let deviceType = DEVICE_FRIDGE;
+
+    //所有商品
+    let products = [];
+    //当前选择的商品
+    let selected_products = [];
+    //当前选择的商品个数
+    let selected_products_counts = [];
+    //当前要要添加商品的层
+    let layerIndex = 0;
+    //一共多少层
+    let layers = LAYERS_FRIDGE;
+
+    //搜索关键字补充
+    let tips = [];
+    //搜索到的地址集合
+    let pois = [];
+    //poi地址页数
+    let poiPageNumber = 1;
+    const POI_PAGE_SIZE = 20;
+
+    window.onload = function () {
+        initSelectedInfo();
+        initSize();
+        updateStepUI();
+        updateDeviceUI();
+    };
+
+    window.onresize = function () {
+        initSize();
+    };
+
+    function initSize() {
+        let step_content = document.getElementsByClassName("step_content")[0];
+        step_content.style.height = (window.innerHeight - 72 - 56 - 1 - 1 - 48 * 2) + "px";
+        let map = document.getElementById("map");
+        map.style.height = (window.innerHeight - 72 - 56 - 1 - 1 - 48 * 2) + "px";
+    }
+
+    function updateStepUI() {
+        //所有步骤已完成,"继续"变为"完成"
+        if (stepIndex >= STEP_COUNT - 1) {
+            document.getElementById("next_step").innerHTML = "完成";
+        } else {
+            document.getElementById("next_step").innerHTML = "继续";
+        }
+        //当前是第一步操作,隐藏"返回上一步"
+        if (stepIndex <= 0) {
+            document.getElementById("last_step").style.visibility = "hidden";
+        } else {
+            document.getElementById("last_step").style.visibility = "visible";
+        }
+        let indicators = document.getElementsByClassName("indicator");
+        let indicatorDescriptions = document.getElementsByClassName("indicator_desc");
+        for (let i = 0; i < indicators.length; i++) {
+            if (stepIndex > i) {
+                indicators[i].style.background = "#7900F1 url('drawable/icon_check.svg') center no-repeat";
+                indicators[i].innerHTML = "";
+                indicatorDescriptions[i].style.fontWeight = "bold";
+                indicatorDescriptions[i].style.color = "#000000";
+            } else if (stepIndex === i) {
+                indicators[i].style.background = "#7900F1";
+                indicatorDescriptions[i].style.fontWeight = "bold";
+                indicatorDescriptions[i].style.color = "#000000";
+                indicators[i].innerHTML = (i + 1) + "";
+            } else {
+                indicators[i].style.background = "#CCCCCC";
+                indicatorDescriptions[i].style.fontWeight = "normal";
+                indicatorDescriptions[i].style.color = "#A9A9A9";
+                indicators[i].innerHTML = (i + 1) + "";
+            }
+        }
+        updateStepContent();
+    }
+
+    function updateStepContent() {
+        let step_device = document.getElementById("step_device");
+        let step_product = document.getElementById("step_product");
+        let step_address = document.getElementById("step_address");
+        switch (stepIndex) {
+            case 0:
+                step_device.style.display = "block";
+                step_product.style.display = "none";
+                step_address.style.display = "none";
+                updateDeviceUI();
+                break;
+            case 1:
+                step_product.style.display = "block";
+                step_device.style.display = "none";
+                step_address.style.display = "none";
+                let product_selected_box = document.getElementById("product_selected_box");
+                product_selected_box.style.height = (window.innerHeight - 72 - 56 - 1 - 1 - 48 * 2) + "px";
+                product_selected_box.style.width = (window.innerWidth - 48 * 2) * 0.7 + "px";
+                let product_all_box = document.getElementById("product_all_box");
+                product_all_box.style.height = (window.innerHeight - 72 - 56 - 1 - 1 - 48 * 2) + "px";
+                product_all_box.style.width = (window.innerWidth - 48 * 2) * 0.3 + "px";
+                loadSelectedProducts();
+                if (products.length <= 0) {
+                    requestAllProducts();
+                }
+                break;
+            case 2:
+                step_address.style.display = "block";
+                step_device.style.display = "none";
+                step_product.style.display = "none";
+                initMap();
+                break;
+            default:
+                break;
+        }
+    }
+
+    //    function onSearchFocus(input) {
+    //        input.style.color = "#212121";
+    //        input.value = "";
+    //    }
+    //
+    //    function onSearchBlur(input) {
+    //        input.style.color = "#BDBDBD";
+    //        input.value = "请输入投放地址...";
+    //    }
+
+    //监听输入框内容改变
+    function onSearchTextChanged(input) {
+        let value = input.value;
+        let search_clear = document.getElementById("search_clear");
+        if (value === null || value === undefined || value.length === 0) {
+            search_clear.style.visibility = "hidden";
+            tips = [];
+            loadInputTipsData();
+        } else {
+            search_clear.style.visibility = "visible";
+            requestInputTips(value);
+        }
+    }
+
+    //请求搜索输入提示
+    function requestInputTips(keywords) {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.url + ":" + http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.status + ":" + data.info);
+                        if (data.status === "1") {
+                            tips = data.tips;
+                        } else {
+                            tips = [];
+                            alert(data.info);
+                        }
+                    } else {
+                        tips = [];
+                        console.log("请求失败");
+                    }
+                    loadInputTipsData(keywords);
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "https://restapi.amap.com/v3/assistant/inputtips" +
+            "?key=0cf3219adfc99564d9bcb1752f32352b" +
+            "&keywords=" + keywords, true);
+        http.send();
+    }
+
+    function loadInputTipsData(keywords) {
+        let search_content_box = document.getElementById("search_content_box");
+        let htmlData = "";
+        for (let i = 0; i < tips.length; i++) {
+            let tip = tips[i];
+            htmlData += "<div class='list_item_single_text' onclick='search(\"" + tip.name + "\")' id='" + tip.name + "'>" +
+                "<span class='list_title_single_text'>" + getTitleWithKeywordsStyle(tip.name, keywords) + "</span>" +
+                "</div>";
+        }
+        console.log(htmlData);
+        search_content_box.innerHTML = htmlData;
+    }
+
+    function getTitleWithKeywordsStyle(title, keywords) {
+        if (keywords === null || keywords === undefined || keywords.length === 0) {
+            return title;
+        }
+        if (title.indexOf(keywords) === -1) {
+            return title;
+        }
+        return title.replace(keywords, "<span style='font-weight: bold;color: #413A3C'>" + keywords + "</span>");
+    }
+
+    //清除输入框中的内容
+    function clearSearchText(clear) {
+        let input = document.getElementById("search_address");
+        input.value = "";
+        clear.style.visibility = "hidden";
+        tips = [];
+        loadInputTipsData();
+    }
+
+    //当按下回车键时开始搜索
+    function onEnterKeyPressed(event) {
+        if (event.keyCode === 13) {
+            let value = document.getElementById("search_address").value;
+            if (value === null || value === undefined || value === "") {
+                return;
+            }
+            search(value);
+        }
+    }
+
+    //搜索
+    function search(text) {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.url + ":" + http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.status + ":" + data.info);
+                        if (data.status === "1") {
+                            pois = data.pois;
+                        } else {
+                            pois = [];
+                            alert(data.info);
+                        }
+                    } else {
+                        pois = [];
+                        console.log("请求失败");
+                    }
+                    loadSearchData();
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "https://restapi.amap.com/v3/place/text" +
+            "?keywords=" + text +
+            "&offset=" + POI_PAGE_SIZE +
+            "&page=" + poiPageNumber +
+            "&key=0cf3219adfc99564d9bcb1752f32352b" +
+            "&extensions=base", true);
+        http.send();
+    }
+
+    function loadSearchData() {
+        let search_content_box = document.getElementById("search_content_box");
+        let htmlData = "";
+        for (let i = 0; i < pois.length; i++) {
+            let poi = pois[i];
+            htmlData += "<div class='list_item_address' onclick='putMarkerOnMap(" + i + ")'>" +
+                "<img src='drawable/location.svg' class='list_icon_address'>" +
+                "<span class='list_title_address'>" + poi.name + "</span>" +
+                "<span class='list_subtitle_address'>" + poi.address + "</span>" +
+                "</div>" +
+                "<div class='list_divider'></div>";
+        }
+        console.log(htmlData);
+        search_content_box.innerHTML = htmlData;
+    }
+
+    function putMarkerOnMap(index) {
+        let poi = pois[index];
+        let location = poi.location.split(",");
+        addMarker(parseFloat(location[0]), parseFloat(location[1]));
+    }
+
+    /*
+    下一步操作
+     */
+    function onNextStep() {
+        //所有步骤已完成
+        if (stepIndex >= STEP_COUNT - 1) {
+            complete();
+            return;
+        }
+        stepIndex++;
+        updateStepUI();
+    }
+
+    function complete() {
+
+    }
+
+    /*
+    返回上一步
+     */
+    function onLastStep() {
+        stepIndex--;
+        updateStepUI();
+    }
+
+    function onCancel() {
+        history.back(-1);
+    }
+
+    /*
+    选中某个设备
+     */
+    function onDeviceSelect(id) {
+        if (id === "rb_box_fridge") {
+            deviceType = DEVICE_FRIDGE;
+            layers = LAYERS_FRIDGE;
+        } else {
+            deviceType = DEVICE_RACK;
+            layers = LAYERS_RACK;
+        }
+        initSelectedInfo();
+        updateDeviceUI();
+    }
+
+    function initSelectedInfo() {
+        for (let i = 0; i < layers; i++) {
+            selected_products[i] = [];
+            selected_products_counts[i] = [];
+        }
+    }
+
+    /*
+    获取所有的商品
+     */
+    function requestAllProducts() {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.url + ":" + http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                //请求结束
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.code + ":" + data.message + ":" + data.value);
+                        if (data.code === CODE_SUCCESS) {
+                            products = data.value;
+                        } else {
+                            products = [];
+                            alert(data.message);
+                        }
+                    } else {
+                        products = [];
+                        console.log("请求失败");
+                    }
+                    if (products.length <= 0) {
+                        break;
+                    }
+                    loadAllProducts();
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "products", true);
+        http.send();
+    }
+
+    //    <div class="list_item">
+    //        <img src="drawable/temp.png" class="list_icon">
+    //        <span class="list_title">大茶壶</span>
+    //        <span class="list_subtitle">X12</span>
+    //        <img src="drawable/add.svg" class="list_operation">
+    //        </div>
+    function loadAllProducts() {
+        let htmlData = "";
+        let list_all_products = document.getElementById("list_all_products");
+        for (let i = 0; i < products.length; i++) {
+            let product = products[i];
+            htmlData += "<div class='list_item'>" +
+                "<img src='" + product.previewImage + "' class='list_icon' onerror='setPreviewPlaceholder(this)'>" +
+                "<span class='list_title'>" +
+                product.name +
+                "</span>" +
+                "<span class='list_subtitle'>" +
+                product.brand +
+                "</span>" +
+                "<img src='drawable/cart.svg' class='list_operation' onclick='selectProductToContainer(" + i + ")'>" +
+                "</div>"
+        }
+        list_all_products.innerHTML = htmlData;
+    }
+
+    function setPreviewPlaceholder(img) {
+        img.src = "drawable/image_placeholder.svg";
+        img.onerror = null;
+    }
+
+    function selectProductToContainer(i) {
+        let product = products[i];
+        if (isProductExist(product)) {
+            alert("该层已经添加了" + product.name + "！");
+            return;
+        }
+        selected_products[layerIndex].unshift(product);
+        selected_products_counts[layerIndex].unshift(0);
+        loadSelectedProducts();
+    }
+
+    function isProductExist(product) {
+        for (let i = 0; i < selected_products[layerIndex].length; i++) {
+            if (selected_products[layerIndex][i].productId === product.productId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function onSelectLayerIndex(i) {
+        layerIndex = i;
+        loadSelectedProducts();
+    }
+
+    //    <div class="sub_header_box">
+    //        <span class="sub_header">第一层</span>
+    //        <img src="drawable/layer_unchecked.svg" class="list_operation sub_header_operation">
+    //        </div>
+    //        <div class="list_item">
+    //        <img src="drawable/temp.png" class="list_icon">
+    //        <span class="list_title">大茶壶</span>
+    //        <span class="list_subtitle">x12</span>
+    //        <img src="drawable/add.svg" class="list_operation item_add">
+    //        <img src="drawable/reduce.svg" class="list_operation item_reduce">
+    //        <img src="drawable/delete.svg" class="list_operation item_delete">
+    //        </div>
+    //        <div class="list_divider"></div>
+    function loadSelectedProducts() {
+        let htmlData = "";
+        let list_selected_products = document.getElementById("list_selected_products");
+        for (let i = 0; i < selected_products.length; i++) {
+            htmlData += "<div class='sub_header_box'>" +
+                "<span class='sub_header'>第" + (i + 1) + "层</span>" +
+                "<img src='" + (layerIndex === i ? "drawable/layer_checked.svg" : "drawable/layer_unchecked.svg") + "' class='list_operation sub_header_operation' onclick='onSelectLayerIndex(" + i + ")'>" +
+                "</div>";
+            for (let j = 0; j < selected_products[i].length; j++) {
+                let product = selected_products[i][j];
+                let product_count = selected_products_counts[i][j];
+                htmlData += "<div class='list_item'>" +
+                    "<img src='" + product.previewImage + "' class='list_icon' onerror='setPreviewPlaceholder(this)'>" +
+                    "<span class='list_title'>" +
+                    product.name +
+                    "</span>" +
+                    "<span class='list_subtitle'>x" +
+                    product_count +
+                    "</span>" +
+                    "<img src='drawable/add.svg' class='list_operation item_add' onclick='addProductCount(" + i + "," + j + ")'>" +
+                    "<img src='drawable/reduce.svg' class='list_operation item_reduce' onclick='reduceProductCount(" + i + "," + j + ")'>" +
+                    "<img src='drawable/delete.svg' class='list_operation item_delete' onclick='removeProduct(" + i + "," + j + ")'>" +
+                    "</div>";
+            }
+            htmlData += "<div class='list_divider'></div>";
+        }
+        list_selected_products.innerHTML = htmlData;
+    }
+
+    function addProductCount(i, j) {
+        let productCount = selected_products_counts[i][j];
+        productCount++;
+        selected_products_counts[i][j] = productCount;
+        loadSelectedProducts();
+    }
+
+    function reduceProductCount(i, j) {
+        let productCount = selected_products_counts[i][j];
+        if (productCount <= 1) {
+            removeProduct(i, j);
+            return;
+        }
+        productCount--;
+        selected_products_counts[i][j] = productCount;
+        loadSelectedProducts();
+    }
+
+    function removeProduct(i, j) {
+        selected_products[i].splice(j, 1);
+        selected_products_counts[i].splice(j, 1);
+        console.log(selected_products);
+        loadSelectedProducts();
+    }
+
+    /*
+    选中设备时更新ui
+    */
+    function updateDeviceUI() {
+        let card_fridge = document.getElementById("card_fridge");
+        let card_rack = document.getElementById("card_rack");
+        let rb_fridge = document.getElementById("rb_fridge");
+        let rb_rack = document.getElementById("rb_rack");
+        switch (deviceType) {
+            case DEVICE_FRIDGE:
+                card_fridge.style.boxShadow = "0 12px 24px #AFAFAF";
+                card_rack.style.boxShadow = "0 2px 4px #AFAFAF";
+                rb_fridge.src = "drawable/rb_checked.svg";
+                rb_rack.src = "drawable/rb_unchecked.svg";
+                break;
+            case DEVICE_RACK:
+                card_rack.style.boxShadow = "0 12px 24px #AFAFAF";
+                card_fridge.style.boxShadow = "0 2px 4px #AFAFAF";
+                rb_rack.src = "drawable/rb_checked.svg";
+                rb_fridge.src = "drawable/rb_unchecked.svg";
+                break;
+        }
+    }
+</script>
+</body>
+</html>

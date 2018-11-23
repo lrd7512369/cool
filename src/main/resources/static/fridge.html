@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>冰箱</title>
+    <link type="text/css" rel="stylesheet" href="css/base.css">
+    <link type="text/css" rel="stylesheet" href="css/table.css">
+    <link type="text/css" rel="stylesheet" href="css/menu.css">
+    <script src="js/table.js"></script>
+    <style type="text/css">
+
+        body {
+            position: relative;
+        }
+
+        #filter {
+            right: 112px;
+        }
+
+        #put {
+            right: 48px;
+        }
+
+        #bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            visibility: hidden;
+            /*background: rgba(188, 188, 188, .5);*/
+        }
+
+        #menu_filter {
+            top: 16px;
+            right: 128px;
+        }
+
+        #menu_page_size {
+            right: 256px;
+            bottom: 16px;
+            height: 144px;
+        }
+
+        #menu_page_size li {
+            width: 144px;
+        }
+
+    </style>
+</head>
+<body>
+<header class="table_operation">
+    <span id="itemCount">共计100台冰箱</span>
+    <img id="filter" onclick="showFilterMenu()" class="uncheckedOperation" src="drawable/filter.svg"/>
+    <img id="put" onclick="window.open('put.html','_self')" class="uncheckedOperation" src="drawable/add.svg"/>
+</header>
+<main class="table_container">
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="table_field id sort_field">冰箱编号
+                <img src="drawable/arrow_right_select.svg" style="transform: rotate(-90deg)">
+            </td>
+            <td class="table_field">收支(元)</td>
+            <td class="table_field">剩余商品储量</td>
+            <td class="table_field">投放地点</td>
+            <td class="table_field">投放日期</td>
+            <td class="table_field">运行状态</td>
+        </tr>
+        <tr>
+            <td class="table_content id">
+                <div class="checkbox"></div>
+                <span>B123</span>
+            </td>
+            <td class="table_content">+100</td>
+            <td class="table_content">充足</td>
+            <td class="table_content">南京子频电子科技有限公司</td>
+            <td class="table_content">2018-10-09</td>
+            <td class="table_content">正常</td>
+        </tr>
+    </table>
+</main>
+<footer class="table_pageable">
+    <img src="drawable/arrow.svg" id="next_page" onclick="onNextPage()">
+    <img src="drawable/arrow.svg" id="last_page" onclick="onLastPage()">
+    <span id="index">1-10</span>
+    <span id="page_size_desc">每页的数据条数</span>
+    <span id="page_size">10</span>
+    <img src="drawable/drop_down.svg" id="select_page_size" onclick="showPageSizeMenu()">
+</footer>
+<div id="bg" onclick="hideBg()">
+    <div id="menu_filter" class="menu">
+        <ol>
+            <li onclick="onFilter(0)" class="menuItem filterMenuItem" onmouseover="onFilterMenuItemOver(this,0)"
+                onmouseout="onFilterMenuItemOut(this,0)">显示所有冰箱
+            </li>
+            <li onclick="onFilter(1)" class="menuItem filterMenuItem" onmouseover="onFilterMenuItemOver(this,1)"
+                onmouseout="onFilterMenuItemOut(this,1)">仅显示需要补充商品的冰箱
+            </li>
+        </ol>
+    </div>
+    <div id="menu_page_size" class="menu">
+        <ol>
+            <li onclick="onSelectPageSize(0)" class="menuItem pageSizeMenuItem"
+                onmouseover="onPageSizeMenuItemOver(this,0)"
+                onmouseout="onPageSizeMenuItemOut(this,0)">10
+            </li>
+            <li onclick="onSelectPageSize(1)" class="menuItem pageSizeMenuItem"
+                onmouseover="onPageSizeMenuItemOver(this,1)"
+                onmouseout="onPageSizeMenuItemOut(this,1)">20
+            </li>
+            <li onclick="onSelectPageSize(2)" class="menuItem pageSizeMenuItem"
+                onmouseover="onPageSizeMenuItemOver(this,2)"
+                onmouseout="onPageSizeMenuItemOut(this,2)">50
+            </li>
+        </ol>
+    </div>
+</div>
+<script>
+
+    const FILTER_ALL = 0;
+    const FILTER_NEED_SUPPLY = 1;
+
+    let filter = FILTER_NEED_SUPPLY;
+
+    const PAGE_SIZES = [10, 20, 50];
+
+    let pageSize = 10;
+
+    window.onload = function () {
+        initTableSize();
+        updateFilterMenuUI();
+        updatePageSizeUI();
+    };
+
+    window.onresize = function () {
+        initTableSize();
+    };
+
+    function showBg() {
+        let bg = document.getElementById("bg");
+        bg.style.visibility = "visible";
+    }
+
+    function hideBg() {
+        let bg = document.getElementById("bg");
+        bg.style.visibility = "hidden";
+        hidePageSizeMenu();
+        hideFilterMenu();
+    }
+
+    /**
+     * 显示过滤选项
+     */
+    function showFilterMenu() {
+        showBg();
+        hidePageSizeMenu();
+        let menu_filter = document.getElementById("menu_filter");
+        menu_filter.style.visibility = "visible";
+    }
+
+    /**
+     * 隐藏过滤选项
+     */
+    function hideFilterMenu() {
+        let menu_filter = document.getElementById("menu_filter");
+        menu_filter.style.visibility = "hidden";
+    }
+
+    function updateFilterMenuUI() {
+        let menuItems = document.getElementsByClassName("filterMenuItem");
+        for (let i = 0; i < menuItems.length; i++) {
+            if (i === filter) {
+                menuItems[i].style.background = "#E0E0E0";
+            } else {
+                menuItems[i].style.background = "#FFFFFF";
+            }
+        }
+    }
+
+    function onFilter(index) {
+        filter = index;
+        updateFilterMenuUI();
+        hideBg();
+    }
+
+    function onFilterMenuItemOver(menuItem, index) {
+        if (filter === index) {
+            menuItem.style.background = "#E0E0E0";
+        } else {
+            menuItem.style.background = "#F5F5F5";
+        }
+    }
+
+    function onFilterMenuItemOut(menuItem, index) {
+        if (filter === index) {
+            menuItem.style.background = "#E0E0E0";
+        } else {
+            menuItem.style.background = "#FFFFFF";
+        }
+    }
+
+    function showPageSizeMenu() {
+        showBg();
+        hideFilterMenu();
+        let menu_page_size = document.getElementById("menu_page_size");
+        menu_page_size.style.visibility = "visible";
+    }
+
+    function hidePageSizeMenu() {
+        let menu_page_size = document.getElementById("menu_page_size");
+        menu_page_size.style.visibility = "hidden";
+    }
+
+    function onSelectPageSize(index) {
+        pageSize = PAGE_SIZES[index];
+        updatePageSizeUI();
+        let page_size = document.getElementById("page_size");
+        page_size.innerHTML = PAGE_SIZES[index] + "";
+        hideBg();
+    }
+
+    function updatePageSizeUI() {
+        let menuItems = document.getElementsByClassName("pageSizeMenuItem");
+        for (let i = 0; i < menuItems.length; i++) {
+            if (i === PAGE_SIZES.indexOf(pageSize)) {
+                menuItems[i].style.background = "#E0E0E0";
+            } else {
+                menuItems[i].style.background = "#FFFFFF";
+            }
+        }
+    }
+
+    function onPageSizeMenuItemOver(menuItem, index) {
+        if (pageSize === PAGE_SIZES[index]) {
+            menuItem.style.background = "#E0E0E0";
+        } else {
+            menuItem.style.background = "#F5F5F5";
+        }
+    }
+
+    function onPageSizeMenuItemOut(menuItem, index) {
+        if (pageSize === PAGE_SIZES[index]) {
+            menuItem.style.background = "#E0E0E0";
+        } else {
+            menuItem.style.background = "#FFFFFF";
+        }
+    }
+</script>
+</body>
+</html>

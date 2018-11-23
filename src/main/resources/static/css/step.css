@@ -1,0 +1,80 @@
+.step_desc {
+    height: 72px;
+    width: 100%;
+    /*box-shadow: 0 2px 4px #EDEDED;*/
+    text-align: center;
+}
+
+.step_desc li {
+    display: inline-block;
+    height: 72px;
+    line-height: 72px;
+}
+
+.indicator {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: #7900F1;
+    border-radius: 50%;
+    line-height: 24px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+.indicator_divider {
+    width: 256px;
+    height: 1px;
+    display: inline-block;
+    vertical-align: middle;
+    background: #E0E0E0;
+}
+
+.indicator_desc {
+    margin-left: 6px;
+    vertical-align: middle;
+    font-size: 16px;
+    color: #000000;
+    font-weight: bold;
+}
+
+.step_operation {
+    height: 48px;
+    position: relative;
+}
+
+.button{
+    position: absolute;
+    vertical-align: middle;
+}
+
+#last_step {
+    color: #BDBDBD;
+    top: 10px;
+    left: 64px;
+}
+
+#cancel{
+    color: #BDBDBD;
+    top: 10px;
+    right: 144px;
+}
+
+#last_step:hover, #cancel:hover {
+    background: #EDEDED;
+}
+
+#next_step {
+    color: #7900F1;
+    top: 10px;
+    right: 64px;
+}
+
+#next_step:hover {
+    background: #F6E9FE;
+}
+
+
+

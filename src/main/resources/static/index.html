@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>小冷饮</title>
+    <!--<link type="text/css" rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">-->
+    <!--<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>-->
+</head>
+<style type="text/css">
+    body,
+    table,
+    tr,
+    div,
+    input,
+    td {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    body {
+        width: 100%;
+        height: 100vh;
+    }
+
+    #container {
+        position: relative;
+    }
+
+    table {
+        border-spacing: 0;
+    }
+
+    #bg_box {
+        /*background: #ffcc00;*/
+        position: absolute;
+    }
+
+    #front_box {
+        width: 820px;
+        height: 492px;
+        left: 50%;
+        top: 200px;
+        margin-left: -410px;
+        position: absolute;
+        box-shadow: 0 12px 24px rgba(88, 88, 88, .5);
+    }
+
+    #desc_box {
+        float: left;
+        width: 492px;
+        height: 492px;
+        background: #7900F1;
+        text-align: center;
+    }
+
+    #login_box {
+        position: relative;
+        float: right;
+        width: 328px;
+        height: 492px;
+        background: #FFFFFF;
+    }
+
+    #icon {
+        width: 72px;
+        height: 72px;
+        display: block;
+        margin: 180px auto 0;
+    }
+
+    #title {
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+        font-style: italic;
+        color: #FFFFFF;
+        font-size: 18px;
+    }
+
+    .input_field {
+        width: 280px;
+        margin: 24px auto 0;
+        height: 56px;
+        padding: 0 12px;
+        border-bottom: 2px solid #9A9A9A;
+        background: rgba(232, 232, 232, .98);
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+
+    .input_desc {
+        display: block;
+        color: #5F5F5F;
+        padding-top: 4px;
+        font-size: 16px;
+    }
+
+    input {
+        background: none;
+        width: 280px;
+        height: 32px;
+        outline: none;
+        color: #1E1E1E;
+        font-size: 20px;
+    }
+
+    .login_btn {
+        height: 48px;
+        border-radius: 3px;
+        color: #FFFFFF;
+        background: #7900F1;
+        text-align: center;
+        line-height: 48px;
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+    }
+
+    .login_btn:hover {
+        background: #7E00FF;
+        cursor: pointer;
+    }
+
+    h1 {
+        padding-left: 16px;
+        margin-top: 24px;
+        font-family: "Microsoft YaHei", sans-serif;
+    }
+
+</style>
+
+<body>
+<div id="container">
+    <div id="bg_box"></div>
+    <div id="front_box">
+        <div id="desc_box">
+            <img src="drawable/icon.svg" id="icon">
+            <span id="title">小冷饮</span>
+        </div>
+        <div id="login_box">
+            <h1>登录</h1>
+            <div class="input_field">
+                <label for="username" class="input_desc">手机号</label><input id="username">
+            </div>
+            <div class="input_field">
+                <label for="password" class="input_desc">密码</label><input id="password" type="password">
+            </div>
+            <div class="login_btn" onclick="tryToLogin()">
+                登录
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    let HORIZONTAL_PART = 0;
+    let VERTICAL_PART = 0;
+    const FRAMES = 60;
+    let animations = [];
+    const COLORS = ["#FBB400", "#FF0013", "#4B71FF", "#4B71FF"];
+    const CODE_SUCCESS = 0;
+
+    let itemWidth = window.innerWidth / HORIZONTAL_PART;
+    let itemHeight = window.innerHeight / VERTICAL_PART;
+
+    window.onload = function () {
+        let inputs = document.getElementsByTagName("input");
+        let labels = document.getElementsByTagName("label");
+        let input_fields = document.getElementsByClassName("input_field");
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].onfocus = function () {
+                input_fields[i].style.borderBottomColor = "#7900F1";
+                labels[i].style.color = "#7900F1";
+            };
+            inputs[i].onblur = function () {
+                input_fields[i].style.borderBottomColor = "#9A9A9A";
+                labels[i].style.color = "#5F5F5F";
+            };
+            if (i === 0) {
+                inputs[i].focus();
+            }
+        }
+        let front_box = document.getElementById("front_box");
+        front_box.style.top = (window.innerHeight - 492) / 2 + "px";
+        initSize();
+        animate();
+    };
+
+    function tryToLogin() {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        console.log("账号：" + username + "---密码：" + password);
+        if (username === undefined || username === null || username === "") {
+            window.alert("手机号不能为空！");
+        }
+        if (username.length !== 11) {
+            window.alert("请输入正确的手机号！");
+        }
+        if (password === undefined || password === null || password === "") {
+            window.alert("密码不能为空！");
+        }
+        login(username, password);
+    }
+
+    function login(phone, password) {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.code + ":" + data.message + ":" + data.value);
+                        if (data.code === CODE_SUCCESS) {
+                            window.open("main.html", "_self");
+                        } else {
+                            alert(data.message);
+                        }
+                    } else {
+                        console.log("请求失败");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("POST", "user", true);
+        let formData = new FormData();
+        formData.append("phone", phone);
+        formData.append("password", password);
+        http.send(formData);
+    }
+
+    window.onresize = function () {
+        console.log("window尺寸改变了：" + window.innerWidth + ":" + window.innerHeight);
+        initSize();
+        animate();
+    };
+
+    function initSize() {
+//        let front_box = document.getElementById("front_box");
+//        console.log(front_box.style.width+":"+front_box.style.height);
+//        front_box.style.left = (window.innerWidth - parseInt(front_box.style.width.slice(0, front_box.style.width.length - 2))) / 2 + "px";
+//        front_box.style.top = (window.innerHeight - parseInt(front_box.style.height.slice(0, front_box.style.height.length - 2))) / 2 + "px";
+//        console.log(front_box.style.left + ":" + front_box.style.top);
+        if (window.innerWidth > window.innerHeight) {
+            HORIZONTAL_PART = 10;
+            VERTICAL_PART = parseInt(HORIZONTAL_PART / (window.innerWidth / window.innerHeight));
+        } else {
+            VERTICAL_PART = 10;
+            HORIZONTAL_PART = parseInt(VERTICAL_PART / (window.innerHeight / window.innerWidth));
+        }
+        console.log(HORIZONTAL_PART + ":" + VERTICAL_PART);
+        itemWidth = window.innerWidth / HORIZONTAL_PART;
+        itemHeight = window.innerHeight / VERTICAL_PART;
+        let container = document.getElementById("container");
+        container.width = window.innerWidth + "px";
+        container.height = window.innerHeight + "px";
+        let bg_box = document.getElementById("bg_box");
+        bg_box.width = window.innerWidth + "px";
+        bg_box.height = window.innerHeight + "px";
+        let bgContent = "<table>";
+        for (let i = 0; i < VERTICAL_PART; i++) {
+            bgContent += "<tr>";
+            for (let j = 0; j < HORIZONTAL_PART; j++) {
+                bgContent += "<td>" +
+                    "<div style='overflow:hidden;width:"
+                    + itemWidth
+                    + "px;height: "
+                    + itemHeight
+                    + "px;position: relative'>"
+                    + getContent(itemWidth, itemHeight)
+                    + "</div>"
+                    + "</td>";
+            }
+            bgContent += "</tr>";
+        }
+        bgContent += "</table>";
+//        console.log(bgContent);
+        bg_box.innerHTML = bgContent;
+    }
+
+    function getContent() {
+        let sideLength = itemWidth > itemHeight ? itemHeight : itemWidth;
+        let content = "<table style='position: absolute;left: 0;top: 0' class='table_item'>";
+        for (let i = 0; i < 3; i++) {
+            content += "<tr>";
+            for (let j = 0; j < 3; j++) {
+                content += "<td style='background: " + getRandomColor() + "'>" +
+                    "<div style='width: " + itemWidth + "px;height: " + itemHeight + "px'>" +
+                    "<img style='display: block;" +
+                    "width: " + sideLength / 2 + "px;" +
+                    "height: " + itemHeight + "px;margin: 0 auto'" +
+                    " src='drawable/img" + parseInt(Math.random() * 9) + ".svg'/>" +
+                    "</div>" +
+                    "</td>"
+            }
+            content += "</tr>";
+        }
+        content += "</table>";
+//        console.log(content);
+        return content;
+    }
+
+    function getRandomColor() {
+        return COLORS[parseInt(Math.random() * COLORS.length)];
+    }
+
+    function animate() {
+        for (let i = 0; i < animations.length; i++) {
+            animations[i].stop();
+        }
+        animations = [];
+        let tables = document.getElementsByClassName("table_item");
+        for (let i = 0; i < tables.length; i++) {
+            let table = tables[i];
+            let anim = new MovingAnimation(table);
+            setTimeout(function () {
+                anim.start();
+            }, (Math.random() + 1) * 1000);
+            animations.push(anim);
+        }
+    }
+
+    function MovingAnimation(target) {
+        this.target = target;
+        this.startLeft = 0;
+        this.startTop = 0;
+        this.left = 0;
+        this.top = 0;
+        this.duration = 500;
+        this.endLeft = 0;
+        this.endTop = 0;
+        this.taskId = -1;
+        this.getEndPosition = function (nextFace) {
+            return [(nextFace - (parseInt(nextFace / 3)) * 3) * -itemWidth, (parseInt(nextFace / 3)) * -itemHeight];
+        };
+        this.findNextFaces = function () {
+            let currentFace = parseInt(this.startLeft / -itemWidth) + parseInt(this.startTop / -itemHeight) * 3;
+//            console.log("当前页面：" + currentFace);
+            switch (currentFace) {
+                case 0:
+                    return [1, 3];
+                case 1:
+                    return [0, 2, 4];
+                case 2:
+                    return [1, 5];
+                case 3:
+                    return [0, 4, 6];
+                case 4:
+                    return [1, 3, 5, 7];
+                case 5:
+                    return [2, 4, 8];
+                case 6:
+                    return [3, 7];
+                case 7:
+                    return [4, 6, 8];
+                case 8:
+                    return [5, 7];
+                default:
+                    console.log("什么鬼：" + this.startLeft + ":" + this.startTop + ":" + itemWidth + ":" + itemHeight + ":" + currentFace);
+                    return [0];
+            }
+        };
+        this.init = function () {
+            let leftStyle = this.target.style.left;
+            let topStyle = this.target.style.top;
+//            console.log(leftStyle + ":" + topStyle);
+            if (leftStyle === "") {
+                this.startLeft = 0;
+            } else {
+                this.startLeft = parseFloat(leftStyle.slice(0, leftStyle.length - 2));
+            }
+            if (topStyle === "") {
+                this.startTop = 0;
+            } else {
+                this.startTop = parseFloat(topStyle.slice(0, topStyle.length - 2));
+            }
+//            console.log("起始position：" + this.startLeft + "---" + this.startTop);
+            this.left = this.startLeft;
+            this.top = this.startTop;
+            this.duration = 300;
+            let nextFaces = this.findNextFaces();
+//            console.log("下面的所有face---" + nextFaces);
+            let nextFace = nextFaces[parseInt(Math.random() * nextFaces.length)];
+//            console.log("下一个页面:" + nextFace);
+            let position = this.getEndPosition(nextFace);
+            this.endLeft = position[0];
+            this.endTop = position[1];
+//            console.log("终点position：" + this.endLeft + "---" + this.endTop);
+            this.taskId = -1;
+        };
+        this.init();
+    }
+
+    MovingAnimation.prototype.updatePosition = function () {
+        this.left += (this.endLeft - this.startLeft) / (this.duration / (1000 / FRAMES));
+        this.top += (this.endTop - this.startTop) / (this.duration / (1000 / FRAMES));
+//        console.log(this.top + ":" + this.left);
+        if (Math.abs(this.left - this.endLeft) <= 0.1 && Math.abs(this.top - this.endTop) <= 0.1) {
+            this.left = this.endLeft;
+            this.top = this.endTop;
+        }
+        this.target.style.left = this.left + "px";
+        this.target.style.top = this.top + "px";
+        let that = this;
+        if (this.left === this.endLeft && this.top === this.endTop) {
+            //        clearInterval(this.taskId);
+            this.stop();
+            this.init();
+            setTimeout(function () {
+                that.start();
+            }, (Math.random() + 3) * 1000);
+        } else {
+            this.taskId = requestAnimationFrame(function () {
+                that.updatePosition();
+            });
+        }
+    };
+
+    MovingAnimation.prototype.start = function () {
+//        clearInterval(this.taskId);
+//        cancelAnimationFrame(this.taskId);
+        let that = this;
+        this.taskId = requestAnimationFrame(function () {
+            that.updatePosition();
+        });
+//        this.taskId = setInterval(function () {
+//            that.updatePosition();
+//        }, 1000 / FRAMES);
+    };
+
+    MovingAnimation.prototype.stop = function () {
+        cancelAnimationFrame(this.taskId)
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品</title>
+    <link href="css/base.css" rel="stylesheet" type="text/css">
+    <link href="css/table.css" rel="stylesheet" type="text/css">
+    <link href="css/menu.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+
+        body {
+            position: relative;
+        }
+
+        .table_content {
+            color: #222222;
+            font-size: 16px;
+            line-height: 72px;
+            height: 72px;
+        }
+
+        .product_image {
+            width: 10%;
+            text-align: center;
+        }
+
+        .product_name {
+            text-align: left;
+            padding-left: 24px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .product_brand {
+            width: 8%;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .product_bid, .product_price, .product_stock {
+            text-align: right;
+            width: 8%;
+            padding-left: 0;
+        }
+
+        .product_sold {
+            padding-right: 64px;
+            width: 15%;
+            padding-left: 0;
+            text-align: right;
+        }
+
+        .product_image img {
+            width: 48px;
+            height: 48px;
+            vertical-align: middle;
+            border-radius: 4px;
+        }
+
+        #delete, #add_product {
+            right: 48px;
+        }
+
+        #modify {
+            right: 112px;
+        }
+
+        .checkedOperation {
+            visibility: hidden;
+        }
+
+        #bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: rgba(188, 188, 188, .0);
+            visibility: hidden;
+        }
+
+        #save_product_dialog {
+            width: 804px;
+            background: #FFFFFF;
+            border-radius: 4px;
+            box-shadow: darkgrey 10px 10px 30px 5px;
+        }
+
+        .dialog_header {
+            background: #FFFFFF;
+            padding-top: 24px;
+            box-shadow: 0 2px 4px #EDEDED;
+            padding-bottom: 3px;
+        }
+
+        #dialog_title {
+            font-size: 24px;
+            font-weight: bold;
+            padding-left: 24px;
+        }
+
+        .tab_field {
+            margin-top: 12px;
+            padding-left: 24px;
+            height: 48px;
+        }
+
+        .tab_field span {
+            height: 48px;
+            border: none;
+            line-height: 48px;
+            font-size: 16px;
+            display: inline-block;
+            text-align: center;
+            vertical-align: bottom;
+            color: #767676;
+        }
+
+        #tab_preview {
+            color: #000000;
+            font-weight: bold;
+            border-bottom: 3px solid #7E00FF;
+        }
+
+        #tab_input {
+            margin-left: 24px;
+            border-bottom: 3px solid #FFFFFF;
+        }
+
+        .tab_field span:hover {
+            cursor: pointer;
+        }
+
+        .dialog_content {
+            height: 312px;
+            width: 804px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .preview_box {
+            width: 804px;
+            height: 312px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            text-align: center;
+        }
+
+        #preview_image_box {
+            width: 198px;
+            height: 198px;
+            margin: 24px auto;
+            position: relative;
+            border: 3px dotted #D7D7D7;
+            border-radius: 4px;
+        }
+
+        #preview_image {
+            display: block;
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            left: 78px;
+            top: 78px;
+        }
+
+        #file_upload_box {
+            padding: 0 16px;
+            display: inline-block;
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            font-size: 14px;
+            background: #4B6AFC;
+            border-radius: 4px;
+            color: #FFFFFF;
+            position: relative;
+            box-shadow: 0 1px 2px #888888;
+        }
+
+        #file_upload {
+            outline: none;
+            border: none;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            position: absolute;
+            display: block;
+        }
+
+        #file_upload:hover {
+            cursor: pointer;
+        }
+
+        .input_box {
+            width: 804px;
+            height: 312px;
+            padding: 12px 0;
+            position: absolute;
+            visibility: hidden;
+            left: 0;
+            right: 0;
+        }
+
+        .dialog_footer {
+            position: relative;
+            height: 64px;
+        }
+
+        .dialog_footer span {
+            height: 36px;
+            top: 14px;
+            position: absolute;
+            padding: 0 8px;
+            font-size: 16px;
+            line-height: 36px;
+            color: #7900F1;
+        }
+
+        .dialog_footer span:hover {
+            background: #F6E9FE;
+            cursor: pointer;
+        }
+
+        #dialog_confirm {
+            right: 12px;
+        }
+
+        #dialog_cancel {
+            right: 96px;
+        }
+
+        .input_field {
+            width: 732px;
+            margin: 12px auto;
+            height: 56px;
+            padding: 0 12px;
+            border-bottom: 2px solid #9A9A9A;
+            background: rgba(232, 232, 232, .98);
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+
+        .input_desc {
+            display: block;
+            color: #5F5F5F;
+            padding-top: 4px;
+            font-size: 16px;
+        }
+
+        .input_field input {
+            background: none;
+            width: 732px;
+            height: 32px;
+            outline: none;
+            color: #1E1E1E;
+            font-size: 20px;
+        }
+
+        #menu_page_size {
+            right: 256px;
+            bottom: 16px;
+            height: 144px;
+        }
+
+        #menu_page_size li {
+            width: 144px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <!--<h1>商品</h1>-->
+    <!--<p>显示已添加的所有冷饮</p>-->
+    <!--<div class="divider"></div>-->
+    <header class="table_operation">
+        <img id="modify" class="checkedOperation" onclick="showUploadDialog()" src="drawable/modify.svg"/>
+        <span id="itemCount"></span>
+        <img id="add_product" onclick="showUploadDialog()" class="uncheckedOperation" src="drawable/add.svg"/>
+        <img id="delete" class="checkedOperation" onclick="tryToDeleteProduct()" src="drawable/delete.svg"/>
+    </header>
+    <main class="table_container">
+        <table border="0" cellpadding="0" cellspacing="0">
+            <!--<tr>-->
+            <!--<td class="desc left">商品缩略图</td>-->
+            <!--<td class="desc">商品编号</td>-->
+            <!--<td class="desc">商品名称</td>-->
+            <!--<td class="desc">品牌</td>-->
+            <!--<td class="desc">进价(元)</td>-->
+            <!--<td class="desc">售价(元)</td>-->
+            <!--<td class="desc">库存(个)</td>-->
+            <!--<td class="desc">已售出(个)</td>-->
+            <!--</tr>-->
+        </table>
+    </main>
+    <footer class="table_pageable">
+        <img src="drawable/arrow.svg" id="next_page" onclick="onNextPage()">
+        <img src="drawable/arrow.svg" id="last_page" onclick="onLastPage()">
+        <span id="index">1-10</span>
+        <span id="page_size_desc">每页的数据条数</span>
+        <span id="page_size">10</span>
+        <img src="drawable/drop_down.svg" id="select_page_size" onclick="showPageSizeMenu()">
+    </footer>
+</div>
+<div id="bg" onclick="hideBg()">
+    <div id="save_product_dialog" onclick="preventBgTouch(event)">
+        <header class="dialog_header">
+            <span id="dialog_title">新增商品</span>
+            <div class="tab_field">
+                <span id="tab_preview" class="tab" onclick="switchTab(this.id)">上传商品图片</span>
+                <span id="tab_input" class="tab" onclick="switchTab(this.id)">商品信息</span>
+            </div>
+        </header>
+        <main class="dialog_content">
+            <div class="preview_box tab_page">
+                <div id="preview_image_box">
+                    <img id="preview_image" src="drawable/add_photo.svg">
+                </div>
+                <div id="file_upload_box">
+                    从计算机中选择图片
+                    <label>
+                        <input type="file" id="file_upload" onchange="onSelectPhoto(event)">
+                    </label>
+                </div>
+            </div>
+            <div class="input_box tab_page">
+                <div class="input_field">
+                    <label for="input_name" class="input_desc">商品名称</label><input id="input_name" class="input_product"
+                                                                                  autocomplete="off">
+                </div>
+                <div class="input_field">
+                    <label for="input_brand" class="input_desc">品牌</label><input id="input_brand" class="input_product"
+                                                                                 autocomplete="off">
+                </div>
+                <div class="input_field">
+                    <label for="input_bid" class="input_desc">进价(元)</label><input id="input_bid" type="number"
+                                                                                  class="input_product"
+                                                                                  autocomplete="off">
+                </div>
+                <div class="input_field">
+                    <label for="input_price" class="input_desc">售价(元)</label><input id="input_price" type="number"
+                                                                                    class="input_product"
+                                                                                    autocomplete="off">
+                </div>
+            </div>
+        </main>
+        <div class="divider"></div>
+        <footer class="dialog_footer">
+            <span id="dialog_confirm" onclick="tryToSaveProduct()">确认上传</span>
+            <span id="dialog_cancel" onclick="hideBg()">取消</span>
+        </footer>
+    </div>
+    <div id="menu_page_size" class="menu">
+        <ol>
+            <li onclick="onSelectPageSize(0)" class="menuItem pageSizeMenuItem"
+                onmouseover="onPageSizeMenuItemOver(this,0)"
+                onmouseout="onPageSizeMenuItemOut(this,0)">10
+            </li>
+            <li onclick="onSelectPageSize(1)" class="menuItem pageSizeMenuItem"
+                onmouseover="onPageSizeMenuItemOver(this,1)"
+                onmouseout="onPageSizeMenuItemOut(this,1)">20
+            </li>
+            <li onclick="onSelectPageSize(2)" class="menuItem pageSizeMenuItem"
+                onmouseover="onPageSizeMenuItemOver(this,2)"
+                onmouseout="onPageSizeMenuItemOut(this,2)">50
+            </li>
+        </ol>
+    </div>
+</div>
+<script>
+
+    //防止点击对话框上的按钮时触发背景的点击事件
+    function preventBgTouch(event) {
+        event.stopPropagation();
+    }
+
+    const CODE_SUCCESS = 0;
+    const SORT_ASC = 0;
+    const SORT_DESC = 1;
+
+    const PAGE_SIZES = [10, 20, 50];
+
+    //当前页的商品信息
+    let products = [];
+    //上传的商品图片
+    let previewImage = null;
+
+    let pageNumber = 1;
+    let pageSize = 10;
+    let sortProperty = "productId";
+    let sortDirection = SORT_DESC;
+
+    //选中的商品id
+    let checkedProductId = -1;
+
+    window.onload = function () {
+        initSize();
+        initInputUI();
+        loadProducts();
+        requestItemsCount();
+        requestProducts();
+    };
+
+    function initInputUI() {
+        let inputs = document.getElementsByClassName("input_product");
+        let labels = document.getElementsByClassName("input_desc");
+        let input_fields = document.getElementsByClassName("input_field");
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].onfocus = function () {
+                input_fields[i].style.borderBottomColor = "#7900F1";
+                labels[i].style.color = "#7900F1";
+            };
+            inputs[i].onblur = function () {
+                input_fields[i].style.borderBottomColor = "#9A9A9A";
+                labels[i].style.color = "#5F5F5F";
+            };
+        }
+    }
+
+    function switchTab(id) {
+        let tabs = document.getElementsByClassName("tab");
+        let tab_pages = document.getElementsByClassName("tab_page");
+        for (let i = 0; i < tabs.length; i++) {
+            let tab = tabs[i];
+            let tab_page = tab_pages[i];
+            if (tab.id !== id) {
+                tab.style.color = "#767676";
+                tab.style.fontWeight = "normal";
+                tab.style.borderBottom = "4px solid rgba(225,225,225,.0)";
+                tab_page.style.visibility = "hidden";
+            } else {
+                tab.style.color = "#000000";
+                tab.style.fontWeight = "bold";
+                tab.style.borderBottom = "4px solid #7900F1";
+                tab_page.style.visibility = "visible";
+            }
+        }
+        if (id === "tab_input") {
+            document.getElementsByClassName("input_product")[0].focus();
+        }
+    }
+
+    //鼠标移动到上传按钮上改变图片
+    function showPreviewReset() {
+        let preview_reset = document.getElementById("preview_reset");
+        if (preview_reset !== null && preview_reset !== undefined) {
+            preview_reset.style.visibility = "visible";
+        }
+    }
+
+    //鼠标移开上传按钮改变图片
+    function hidePreviewReset() {
+        let preview_reset = document.getElementById("preview_reset");
+        if (preview_reset !== null && preview_reset !== undefined) {
+            preview_reset.style.visibility = "hidden";
+        }
+    }
+
+    window.onresize = function () {
+        initSize();
+    };
+
+    //控制table父容器的高度，让table可以正常滑动
+    function initSize() {
+        document.getElementsByClassName("table_container")[0].style.height
+            = (window.innerHeight - 64 - 64) + "px";
+        document.getElementById("save_product_dialog").style.margin = (window.innerHeight - 497) / 2 + "px auto";
+    }
+
+    //获取商品总数量
+    function requestItemsCount() {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.code + ":" + data.message + ":" + data.value);
+                        if (data.code === CODE_SUCCESS) {
+                            let itemCount = document.getElementById("itemCount");
+                            itemCount.innerHTML = "共计" + data.value + "种商品";
+                        } else {
+                            alert(data.message);
+                        }
+                    } else {
+                        console.log("请求失败");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "products/count", true);
+        http.send();
+    }
+
+    //获取商品分页条目
+    function requestProducts() {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.code + ":" + data.message + ":" + data.value);
+                        if (data.code === CODE_SUCCESS) {
+                            products = data.value;
+                        } else {
+                            products = [];
+                            alert(data.message);
+                        }
+                    } else {
+                        console.log("请求失败");
+                    }
+                    loadProducts();
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("GET", "products" +
+            "?pageNumber=" + pageNumber +
+            "&pageSize=" + pageSize +
+            "&sortProperty=" + sortProperty +
+            "&sortDirection=" + sortDirection, true);
+        http.send();
+    }
+
+    function tryToDeleteProduct() {
+        let product = getCheckedProduct();
+        if (confirm("确认要删除商品" + product.name + "吗？")) {
+            deleteProduct(product.productId);
+        }
+    }
+
+    /*
+    删除选定的商品
+     */
+    function deleteProduct(productId) {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.code + ":" + data.message + ":" + data.value);
+                        if (data.code === CODE_SUCCESS) {
+                            checkedProductId = -1;
+                            requestProducts();
+                            requestItemsCount();
+                        } else {
+                            alert(data.message);
+                        }
+                    } else {
+                        console.log("请求失败");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+        http.open("DELETE", "products/" +
+            productId, true);
+        http.send();
+    }
+
+    function tryToSaveProduct() {
+        if (checkedProductId === -1 && (previewImage === null || previewImage === undefined)) {
+            alert("请选择要上传的商品图片!");
+            return;
+        }
+        let name = document.getElementById("input_name").value;
+        if (name === undefined || name === null || name === "") {
+            alert("商品名称不能为空!");
+            return;
+        }
+        let brand = document.getElementById("input_brand").value;
+        if (brand === undefined || brand === null || brand === "") {
+            alert("商品品牌不能为空!");
+            return;
+        }
+        let bid = document.getElementById("input_bid").value;
+        if (bid === undefined || bid === null || bid === "") {
+            alert("商品进价不能为空!");
+            return;
+        }
+        bid = parseInt(parseFloat(bid) * 100);
+        let price = document.getElementById("input_price").value;
+        if (price === undefined || price === null || price === "") {
+            alert("商品售价不能为空!");
+            return;
+        }
+        price = parseInt(parseFloat(price) * 100);
+        save(name, brand, bid, price);
+    }
+
+    //新增商品到服务器
+    function save(name, brand, bid, price) {
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = function () {
+            console.log(http.readyState + ":" + http.status);
+            switch (http.readyState) {
+                case 4:
+                    console.log(http.response);
+                    if (http.status === 200) {
+                        let data = JSON.parse(http.response);
+                        console.log(data.code + ":" + data.message + ":" + data.value);
+                        if (data.code === CODE_SUCCESS) {
+                            hideBg();
+                            requestProducts();
+                            requestItemsCount();
+                        } else {
+                            alert(data.message);
+                        }
+                    } else {
+                        console.log("请求失败");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+        let formData = new FormData();
+        if (checkedProductId === -1) {
+            http.open("POST", "products", true);
+            formData.append("photo", previewImage);
+        } else {
+            http.open("PUT", "products", true);
+            let product = getCheckedProduct();
+            formData.append("productId", product.productId);
+            formData.append("stock", product.stock);
+            formData.append("sold", product.sold);
+            if (previewImage !== null) {
+                formData.append("photo", previewImage);
+            } else {
+                formData.append("previewImage", product.previewImage);
+            }
+        }
+        formData.append("name", name);
+        formData.append("brand", brand);
+        formData.append("bid", bid);
+        formData.append("price", price);
+        http.send(formData);
+    }
+
+    //获取下一页
+    function onNextPage() {
+        pageNumber++;
+        requestProducts();
+    }
+
+    //获取上一页
+    function onLastPage() {
+        pageNumber--;
+        requestProducts();
+    }
+
+    //填充table内容
+    function loadProducts() {
+        let table = document.getElementsByTagName("table")[0];
+        let tableData = "<tr>" +
+            "<td class='table_field id sort_field'>商品编号" +
+            getSortImg("productId") +
+            "</td>" +
+            "<td class='table_field product_image'>商品缩略图</td>" +
+            "<td class='table_field product_name'>商品名称</td>" +
+            "<td class='table_field product_brand'>品牌</td>" +
+            "<td class='table_field product_bid sort_field'>进价(元)" +
+            getSortImg("bid") +
+            "</td>" +
+            "<td class='table_field product_price sort_field'>售价(元)" +
+            getSortImg("price") +
+            "</td>" +
+            "<td class='table_field product_stock sort_field'>库存(个)" +
+            getSortImg("stock") +
+            "</td>" +
+            "<td class='table_field product_sold sort_field'>已售出(个)" +
+            getSortImg("sold") +
+            "</td>" +
+            "</tr>";
+        if (products.length > 0) {
+            for (let i = 0; i < products.length; i++) {
+                let product = products[i];
+                tableData += "<tr class='row' onclick='onProductItemClick(this.id)' id='row" + product.productId + "'" +
+                    " onmouseover='onRowMouseOver(this)' onmouseout='onRowMouseOut(this)'>" +
+                    "<td class='table_content id'>" +
+                    "<div class='checkbox' id='checkbox" + product.productId +
+                    "'></div>" + "<span>" + product.productId + "</span>" +
+                    "</td>" +
+                    "<td class='table_content product_image'>" +
+                    "<img src='" + product.previewImage + "' onerror='setPreviewPlaceholder(this)'>" +
+                    "</td>" +
+                    "<td class='table_content product_name'>" + product.name + "</td>" +
+                    "<td class='table_content product_brand'>" + product.brand + "</td>" +
+                    "<td class='table_content product_bid'>" + parseFloat(product.bid / 100) + "</td>" +
+                    "<td class='table_content product_price'>" + parseFloat(product.price / 100) + "</td>" +
+                    "<td class='table_content product_stock'>" + product.stock + "</td>" +
+                    "<td class='table_content product_sold'>" + product.sold + "</td>" +
+                    "</tr>"
+            }
+        }
+        table.innerHTML = tableData;
+        refreshPageSetting();
+        updateCheckingUI();
+    }
+
+    function getSortImg(property) {
+        let propertyHTML = "\"" + property + "\"";
+        if (sortProperty === property) {
+            if (sortDirection === SORT_ASC) {
+                return "<img src='drawable/arrow_right_select.svg' style='transform: rotate(-90deg);margin-left: 3px' class='sort' id='" + property + "' onclick='sort(" + propertyHTML + ")'>";
+            } else {
+                return "<img src='drawable/arrow_right_select.svg' style='transform: rotate(90deg);margin-left: 3px' class='sort' id='" + property + "' onclick='sort(" + propertyHTML + ")'>";
+            }
+        } else {
+            return "<img src='drawable/arrow_right.svg' style='transform: rotate(90deg);margin-left: 3px' class='sort' id='" + property + "' onclick='sort(" + propertyHTML + ")'>";
+        }
+    }
+
+    //选择排序方式
+    function sort(property) {
+        let sorts = document.getElementsByClassName("sort");
+        for (let i = 0; i < sorts.length; i++) {
+            let sort = sorts[i];
+            if (sort.id === property) {
+                if (sortProperty === property) {
+                    if (sortDirection === SORT_ASC) {
+                        sortDirection = SORT_DESC;
+                    } else {
+                        sortDirection = SORT_ASC;
+                    }
+                }
+            }
+        }
+        sortProperty = property;
+        requestProducts();
+    }
+
+    function setPreviewPlaceholder(img) {
+        img.src = "drawable/image_placeholder.svg";
+        img.onerror = null;
+    }
+
+    //点击每个商品条目
+    function onProductItemClick(rowId) {
+        let click_product_id = parseInt(rowId.slice("row".length));
+        if (click_product_id === checkedProductId) {
+            checkedProductId = -1;
+        } else {
+            checkedProductId = click_product_id;
+        }
+        console.log("当前点击的productId:" + checkedProductId);
+        updateCheckingUI();
+    }
+
+    //更新check相关的ui
+    function updateCheckingUI() {
+        let rows = document.getElementsByClassName("row");
+        let checkboxes = document.getElementsByClassName("checkbox");
+        for (let i = 0; i < rows.length; i++) {
+            let row = rows[i];
+            let checkbox = checkboxes[i];
+            let productId = parseInt(row.id.slice("row".length));
+            if (productId === checkedProductId) {
+                row.style.background = "#F6E9FE";
+                checkbox.style.border = "2px solid rgba(225,225,225,.0)";
+                checkbox.style.background = "#7900F1 url('drawable/icon_check.svg') no-repeat center";
+            } else {
+                row.style.background = "rgba(225,225,225,.0)";
+                checkbox.style.border = "2px solid #757575";
+                checkbox.style.background = "#FFFFFF";
+            }
+        }
+        if (checkedProductId === -1) {
+            showUncheckedOperations();
+        } else {
+            showCheckedOperations();
+        }
+    }
+
+    function showPageSizeMenu() {
+        showBg("rgba(188,188,188,.0)");
+        hideUploadDialog();
+        let menu_page_size = document.getElementById("menu_page_size");
+        menu_page_size.style.visibility = "visible";
+    }
+
+    function hidePageSizeMenu() {
+        let menu_page_size = document.getElementById("menu_page_size");
+        menu_page_size.style.visibility = "hidden";
+    }
+
+    function onSelectPageSize(index) {
+        pageSize = PAGE_SIZES[index];
+        let page_size = document.getElementById("page_size");
+        page_size.innerHTML = PAGE_SIZES[index] + "";
+        document.getElementById("index").innerHTML
+            = (pageSize * (pageNumber - 1) + 1) + "-" + pageSize * pageNumber;
+        updatePageSizeMenuUI();
+        requestProducts();
+    }
+
+    function updatePageSizeMenuUI() {
+        let menuItems = document.getElementsByClassName("pageSizeMenuItem");
+        for (let i = 0; i < menuItems.length; i++) {
+            if (i === PAGE_SIZES.indexOf(pageSize)) {
+                menuItems[i].style.background = "#E0E0E0";
+            } else {
+                menuItems[i].style.background = "#FFFFFF";
+            }
+        }
+    }
+
+    function onPageSizeMenuItemOver(menuItem, index) {
+        if (pageSize === PAGE_SIZES[index]) {
+            menuItem.style.background = "#E0E0E0";
+        } else {
+            menuItem.style.background = "#F5F5F5";
+        }
+    }
+
+    function onPageSizeMenuItemOut(menuItem, index) {
+        if (pageSize === PAGE_SIZES[index]) {
+            menuItem.style.background = "#E0E0E0";
+        } else {
+            menuItem.style.background = "#FFFFFF";
+        }
+    }
+
+    //当选中某项商品时，显示相关操作按钮
+    function showCheckedOperations() {
+//        document.getElementsByClassName("operate_field")[0].style.background = "rgba(225,225,225,.0)";
+        let checkedOperations = document.getElementsByClassName("checkedOperation");
+        for (let i = 0; i < checkedOperations.length; i++) {
+            checkedOperations[i].style.visibility = "visible";
+        }
+        let unCheckedOperations = document.getElementsByClassName("uncheckedOperation");
+        for (let i = 0; i < unCheckedOperations.length; i++) {
+            unCheckedOperations[i].style.visibility = "hidden";
+        }
+    }
+
+    //当没有选中任何一项商品时，显示默认选项
+    function showUncheckedOperations() {
+//        document.getElementsByClassName("operate_field")[0].style.background = "#F6E9FE";
+        let checkedOperations = document.getElementsByClassName("checkedOperation");
+        for (let i = 0; i < checkedOperations.length; i++) {
+            checkedOperations[i].style.visibility = "hidden";
+        }
+        let unCheckedOperations = document.getElementsByClassName("uncheckedOperation");
+        for (let i = 0; i < unCheckedOperations.length; i++) {
+            unCheckedOperations[i].style.visibility = "visible";
+        }
+    }
+
+    function onRowMouseOver(row) {
+        row.style.background = "#F6E9FE";
+        row.style.cursor = "pointer";
+    }
+
+    function onRowMouseOut(row) {
+        row.style.cursor = "default";
+        let currentRowId = parseInt(row.id.slice("row".length));
+        if (currentRowId !== checkedProductId) {
+            row.style.background = "rgba(225,225,225,.0)";
+        }
+    }
+
+    //刷新分页相关ui
+    function refreshPageSetting() {
+        let nextPage = document.getElementById("next_page");
+        if (products.length >= pageSize) {
+            nextPage.style.visibility = "visible";
+        } else {
+            nextPage.style.visibility = "hidden";
+        }
+        let lastPage = document.getElementById("last_page");
+        if (pageNumber <= 1) {
+            lastPage.style.visibility = "hidden";
+        } else {
+            lastPage.style.visibility = "visible";
+        }
+        updatePageSizeMenuUI();
+    }
+
+    //获取当前选中的商品对象
+    function getCheckedProduct() {
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].productId === checkedProductId) {
+                return products[i];
+            }
+        }
+        return null;
+    }
+
+    function showBg(color) {
+        let bg = document.getElementById("bg");
+        bg.style.background = color;
+        bg.style.visibility = "visible";
+    }
+
+    function hideBg() {
+        let bg = document.getElementById("bg");
+        bg.style.visibility = "hidden";
+        hideUploadDialog();
+        hidePageSizeMenu();
+    }
+
+    function showUploadDialog() {
+        showBg("rgba(188,188,188,.6)");
+        hidePageSizeMenu();
+        let dialog = document.getElementById("save_product_dialog");
+        dialog.style.visibility = "visible";
+        switchTab("tab_preview");
+        let dialog_title = document.getElementById("dialog_title");
+        if (checkedProductId === -1) {
+            cancelPreview();
+            dialog_title.innerHTML = "新增商品";
+        } else {
+            let product = getCheckedProduct();
+            setProductValue(product);
+            startPreview(product.previewImage);
+            dialog_title.innerHTML = "修改商品信息";
+        }
+    }
+
+    function hideUploadDialog() {
+        let dialog = document.getElementById("save_product_dialog");
+        dialog.style.visibility = "hidden";
+        previewImage = null;
+        let tab_pages = document.getElementsByClassName("tab_page");
+        for (let i = 0; i < tab_pages.length; i++) {
+            tab_pages[i].style.visibility = "hidden";
+        }
+        resetProductValue();
+    }
+
+    //选择了要上传的图片
+    function onSelectPhoto() {
+        let upload = document.getElementById("file_upload");
+        let reader = new FileReader();
+        reader.onload = function (event) {
+            let result = event.target.result;
+            console.log("读取文件的结果" + result);
+            if (result.indexOf("image") === -1) {
+                alert("请勿选择图片以外的文件类型！");
+            } else {
+                startPreview(result);
+            }
+        };
+        previewImage = upload.files[0];
+        reader.readAsDataURL(previewImage);
+    }
+
+    //显示用户选择的图片
+    function startPreview(result) {
+        let preview_image_box = document.getElementById("preview_image_box");
+        preview_image_box.style.borderColor = "rgba(0,0,0,.0)";
+        let preview_image = document.getElementById("preview_image");
+        preview_image.style.width = "198px";
+        preview_image.style.height = "198px";
+        preview_image.style.left = 0 + "px";
+        preview_image.style.top = 0 + "px";
+        preview_image.src = result;
+    }
+
+    //取消之前选择的图片
+    function cancelPreview() {
+        let preview_image_box = document.getElementById("preview_image_box");
+        preview_image_box.style.borderColor = "#D7D7D7";
+        let preview_image = document.getElementById("preview_image");
+        preview_image.style.width = "48px";
+        preview_image.style.height = "48px";
+        preview_image.style.left = "78px";
+        preview_image.style.top = "78px";
+        preview_image.src = "drawable/add_photo.svg";
+    }
+
+    function setProductValue(product) {
+        let input_name = document.getElementById("input_name");
+        input_name.value = product.name;
+        let input_brand = document.getElementById("input_brand");
+        input_brand.value = product.brand;
+        let input_bid = document.getElementById("input_bid");
+        input_bid.value = (product.bid / 100) + "";
+        let input_price = document.getElementById("input_price");
+        input_price.value = (product.price / 100) + "";
+    }
+
+    function resetProductValue() {
+        let input_name = document.getElementById("input_name");
+        input_name.value = "";
+        let input_brand = document.getElementById("input_brand");
+        input_brand.value = "";
+        let input_bid = document.getElementById("input_bid");
+        input_bid.value = "";
+        let input_price = document.getElementById("input_price");
+        input_price.value = "";
+    }
+
+</script>
+</body>
+</html>

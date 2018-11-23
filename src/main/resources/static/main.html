@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小冷饮</title>
+    <style type="text/css">
+        body, div, img, h1, iframe, p {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .content {
+            z-index: 9;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .toolbar {
+            position: fixed;
+            z-index: 10;
+            width: 100%;
+            height: 72px;
+            background: #7900F1;
+            /*background: -webkit-linear-gradient(90deg, #F02FC2, #6094EA); !* Safari 5.1 - 6.0 *!*/
+            /*background: -o-linear-gradient(90deg, #F02FC2, #6094EA); !* Opera 11.1 - 12.0 *!*/
+            /*background: -moz-linear-gradient(90deg, #F02FC2, #6094EA); !* Firefox 3.6 - 15 *!*/
+            /*background: linear-gradient(90deg, #F02FC2, #6094EA); !* 标准的语法 *!*/
+            padding-left: 24px;
+            box-shadow: 0 4px 8px #A9A9A9;
+            line-height: 72px;
+        }
+
+        .toolbar_icon {
+            width: 32px;
+            height: 32px;
+            vertical-align: middle;
+        }
+
+        .toolbar_title {
+            color: #FFFFFF;
+            vertical-align: middle;
+            font-size: 20px;
+            font-style: italic;
+        }
+
+        .navigator {
+            position: absolute;
+            z-index: 8;
+            top: 72px;
+            height: 100px;
+            width: 20%;
+            box-shadow: 3px 0 6px #EDEDED;
+            overflow: scroll;
+        }
+
+        .desc, .menu {
+            display: block;
+            padding-left: 24px;
+        }
+
+        .desc {
+            font-size: 18px;
+            color: #000000;
+            height: 48px;
+            padding-top: 32px;
+            line-height: 48px;
+        }
+
+        .menu {
+            font-size: 14px;
+            color: #747577;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .menu:hover {
+            background: #F5F5F5;
+            cursor: pointer;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            margin-top: 32px;
+            background: #E1E1E1;
+        }
+
+        .page {
+            z-index: 7;
+            top: 72px;
+            width: 80%;
+            right: 0;
+            position: absolute;
+            height: 2000px;
+            overflow: scroll;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        /*.page_title {*/
+        /*font-size: 56px;*/
+        /*color: #202124;*/
+        /*padding-left: 72px;*/
+        /*padding-top: 56px;*/
+        /*}*/
+
+        /*.page_desc {*/
+        /*color: #5F6368;*/
+        /*font-size: 24px;*/
+        /*padding-top: 12px;*/
+        /*padding-left: 72px;*/
+        /*padding-bottom: 32px;*/
+        /*}*/
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="toolbar">
+        <img src="drawable/icon.svg" class="toolbar_icon">
+        <span class="toolbar_title">小冷饮</span>
+    </div>
+    <div class="content">
+        <div class="navigator">
+            <span class="desc">首页</span>
+            <span class="menu" onclick="switchPage(this.id)" id="home">总览</span>
+            <div class="divider"></div>
+            <span class="desc">管理</span>
+            <span class="menu" onclick="switchPage(this.id)" id="fridge">冰箱</span>
+            <span class="menu" onclick="switchPage(this.id)" id="product">商品</span>
+            <span class="menu" onclick="switchPage(this.id)" id="detail">模版</span>
+            <div class="divider"></div>
+            <span class="desc">事务</span>
+            <span class="menu">冰箱投放</span>
+            <span class="menu">活动发布</span>
+            <div class="divider"></div>
+            <span class="desc">数据</span>
+            <span class="menu">订单</span>
+            <span class="menu">报表</span>
+        </div>
+        <div class="page">
+            <!--<div class="page_header">-->
+            <!--<h1 class="page_title">111</h1>-->
+            <!--<p class="page_desc">222</p>-->
+            <!--<div class="divider"></div>-->
+            <!--</div>-->
+            <iframe id="page">
+
+            </iframe>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        switchPage("product");
+        initSize();
+    };
+
+    window.onresize = function () {
+        initSize();
+    };
+
+    function initSize() {
+        let navigator = document.getElementsByClassName("navigator")[0];
+        navigator.style.height = (window.innerHeight - 72) + "px";
+        let page = document.getElementsByClassName("page")[0];
+        page.style.height = (window.innerHeight - 72) + "px";
+        let container = document.getElementsByClassName("container")[0];
+        container.style.height = window.innerHeight + "px";
+        let content = document.getElementsByClassName("content")[0];
+        content.style.height = window.innerHeight + "px";
+//        let iFrame = document.getElementsByTagName("iFrame")[0];
+//        iFrame.style.height = (window.innerHeight - 72 - 226) + "px";
+    }
+
+    function switchPage(id) {
+        let menus = document.getElementsByClassName("menu");
+        for (let i = 0; i < menus.length; i++) {
+            menus[i].style.background = "";
+        }
+        document.getElementById(id).style.background = "#F5F5F5";
+        let page = document.getElementById("page");
+        page.src = id + ".html";
+    }
+</script>
+</body>
+</html>

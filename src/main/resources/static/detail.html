@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>冰箱详情</title>
+    <link type="text/css" rel="stylesheet" href="css/base.css">
+    <script type="text/javascript"
+            src="https://webapi.amap.com/maps?v=1.4.8&key=9ce9515000767c20d6769865396d5e75"></script>
+    <style type="text/css">
+        body {
+            position: relative;
+        }
+
+        header {
+            height: 196px;
+            background: #FFFFFF;
+            z-index: 9;
+        }
+
+        footer {
+            height: 800px;
+            background: #FFFFFF;
+        }
+
+        main {
+            height: 600px;
+            width: 600px;
+            position: absolute;
+            overflow: scroll;
+        }
+
+        #back {
+            position: absolute;
+            top: 168px;
+            right: 48px;
+            background: #7900F1;
+            z-index: 100;
+        }
+
+        #back:hover {
+            background: #4B00B6;
+        }
+
+        .card {
+            box-shadow: 0 2px 4px #ABABAB;
+            background: #FFFFFF;
+            height: 560px;
+            margin: 24px;
+        }
+
+        #fridge_id {
+            position: absolute;
+            height: 196px;
+            display: inline-block;
+            line-height: 196px;
+            font-size: 36px;
+            color: #000000;
+            font-weight: bold;
+            font-style: italic;
+            text-align: center;
+            left: 0;
+            top: 0;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+
+</header>
+<div class="divider"></div>
+<footer>
+
+</footer>
+<span id="fridge_id">00001</span>
+<img src="drawable/back.svg" class="fab" id="back" onclick="history.back(-1)">
+<main>
+    <div class="card" id="map">
+
+    </div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+</main>
+<script>
+    window.onload = function () {
+        initSize();
+    };
+
+    window.onresize = function () {
+        initSize();
+    };
+
+    function initSize() {
+        let main = document.getElementsByTagName("main")[0];
+        let cardWidth = window.innerHeight - 64;
+        let paddingLeft = (window.innerWidth - cardWidth) / 2;
+        main.style.width = window.innerWidth - paddingLeft * 2 + "px";
+        main.style.height = window.innerHeight - 64 * 2 + "px";
+        main.style.left = "0";
+        main.style.bottom = "0";
+        main.style.padding = 64 + "px " + paddingLeft + "px";
+        let footer = document.getElementsByTagName("footer")[0];
+        footer.style.height = (window.innerHeight - 196) + "px";
+        document.getElementById("back").style.right = (paddingLeft - 56) / 2 + "px";
+        let fridge_id = document.getElementById("fridge_id");
+        fridge_id.style.width = paddingLeft + "px";
+    }
+</script>
+<script type="text/javascript">
+    let map = new AMap.Map('map', {
+        center: [117.000923, 36.675807],
+        zoom: 11
+    });
+</script>
+</body>
+</html>
